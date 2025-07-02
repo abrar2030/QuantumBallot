@@ -1,58 +1,450 @@
-# Docker Compose file for local development of Chainocracy
-# This file defines the services based on the Dockerfiles created.
+# Enhanced Docker Compose for Chainocracy
+# Implements financial-grade security and comprehensive monitoring
 
 version: '3.8'
 
-services:
-  backend:
-    build:
-      context: ../../Chainocracy_project # Context is the root project directory
-      dockerfile: ../Chainocracy_iac/docker/backend.Dockerfile # Path to the backend Dockerfile relative to context
-    container_name: chainocracy-backend-dev
-    ports:
-      - "3000:3000" # Expose backend port
-    volumes:
-      # Mount source code for live reloading during development
-      # Note: node_modules is excluded using a named volume to prevent overwriting container modules
-      - ../../Chainocracy_project/backend-api:/usr/app
-      - backend_node_modules:/usr/app/node_modules
-    environment:
-      - NODE_ENV=development
-      - NODE_PORT=3000
-      - SERVER_PORT=3002
-      # Add other necessary development environment variables
-      # - DATABASE_URL=...
-    # Use nodemon or similar for auto-restarting on code changes
-    # command: npm run dev # Assuming a dev script exists in package.json
-    command: node build/network.js 3002 # Default command if no dev script
-
-  frontend:
-    build:
-      context: ../../ # Context is the parent of Chainocracy_project and Chainocracy_iac
-      dockerfile: Chainocracy_iac/docker/frontend-web.Dockerfile # Path to frontend Dockerfile relative to context
-      args:
-        # Pass API URL for local development (proxied through frontend container or direct)
-        VITE_API_URL: http://localhost:3000/api # Or use Nginx proxy below
-    container_name: chainocracy-frontend-dev
-    ports:
-      - "8080:80" # Expose frontend Nginx port (e.g., access via http://localhost:8080)
-    volumes:
-      # Mount source code for live reloading (if using Vite dev server)
-      # If using Nginx serving static build, volume mount is less useful unless rebuilding often
-      - ../../Chainocracy_project/web-frontend:/app # Mount source if needed for dev server
-      - frontend_node_modules:/app/node_modules # Exclude node_modules
-    depends_on:
-      - backend # Ensure backend starts before frontend (useful if frontend calls backend on start)
-    # environment:
-      # Add frontend specific env vars if needed
+networks:
+  chainocracy-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+    driver_opts:
+      com.docker.network.bridge.name: chainocracy-br0
+      com.docker.network.bridge.enable_icc: "false"
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+  
+  monitoring-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16
+    driver_opts:
+      com.docker.network.bridge.name: monitoring-br0
 
 volumes:
-  backend_node_modules:
-  frontend_node_modules:
+  postgres-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/data/postgres
+  
+  redis-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/data/redis
+  
+  prometheus-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/data/prometheus
+  
+  grafana-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/data/grafana
 
-# Note:
-# - This setup assumes you run `docker-compose up` from the `Chainocracy_iac/docker` directory or specify the compose file path.
-# - For frontend live reload with Vite, you might need a different Dockerfile/command that runs `npm run dev` instead of Nginx.
-# - The current frontend Dockerfile builds static assets and serves via Nginx.
-# - Adjust VITE_API_URL based on how you handle API calls in development (direct to backend port or via proxy).
+secrets:
+  postgres_password:
+    file: ./secrets/postgres_password.txt
+  redis_password:
+    file: ./secrets/redis_password.txt
+  jwt_secret:
+    file: ./secrets/jwt_secret.txt
+
+services:
+  # Database Service
+  postgres:
+    image: postgres:16.1-alpine
+    container_name: chainocracy-postgres
+    restart: unless-stopped
+    networks:
+      - chainocracy-network
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-chainocracy}
+      POSTGRES_USER: ${POSTGRES_USER:-chainocracy}
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256 --auth-local=scram-sha-256"
+    secrets:
+      - postgres_password
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./config/postgres/postgresql.conf:/etc/postgresql/postgresql.conf:ro
+      - ./config/postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf:ro
+      - ./scripts/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    command: >
+      postgres
+      -c config_file=/etc/postgresql/postgresql.conf
+      -c hba_file=/etc/postgresql/pg_hba.conf
+      -c log_statement=all
+      -c log_min_duration_statement=1000
+      -c log_connections=on
+      -c log_disconnections=on
+      -c log_checkpoints=on
+      -c log_lock_waits=on
+    ports:
+      - "127.0.0.1:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-chainocracy} -d ${POSTGRES_DB:-chainocracy}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+    user: "999:999"
+    cap_drop:
+      - ALL
+    cap_add:
+      - SETUID
+      - SETGID
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=postgres,environment=${ENVIRONMENT:-development}"
+
+  # Cache Service
+  redis:
+    image: redis:7.2.4-alpine
+    container_name: chainocracy-redis
+    restart: unless-stopped
+    networks:
+      - chainocracy-network
+    command: >
+      redis-server
+      --requirepass-file /run/secrets/redis_password
+      --appendonly yes
+      --appendfsync everysec
+      --save 900 1
+      --save 300 10
+      --save 60 10000
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --tcp-keepalive 60
+      --timeout 300
+      --databases 1
+      --logfile ""
+      --syslog-enabled no
+    secrets:
+      - redis_password
+    volumes:
+      - redis-data:/data
+      - ./config/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "--no-auth-warning", "-a", "$(cat /run/secrets/redis_password)", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+    user: "999:999"
+    cap_drop:
+      - ALL
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=redis,environment=${ENVIRONMENT:-development}"
+
+  # Backend API Service
+  backend:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/backend.Dockerfile
+      args:
+        BUILD_DATE: ${BUILD_DATE}
+        VCS_REF: ${VCS_REF}
+        VERSION: ${VERSION:-latest}
+    container_name: chainocracy-backend
+    restart: unless-stopped
+    networks:
+      - chainocracy-network
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      NODE_PORT: 3000
+      SERVER_PORT: 3002
+      DATABASE_URL: postgresql://${POSTGRES_USER:-chainocracy}:$(cat /run/secrets/postgres_password)@postgres:5432/${POSTGRES_DB:-chainocracy}
+      REDIS_URL: redis://:$(cat /run/secrets/redis_password)@redis:6379/0
+      JWT_SECRET_FILE: /run/secrets/jwt_secret
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      LOG_FORMAT: json
+      RATE_LIMIT_ENABLED: true
+      HELMET_ENABLED: true
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+    secrets:
+      - postgres_password
+      - redis_password
+      - jwt_secret
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "/usr/app/healthcheck.js"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+    user: "1001:1001"
+    cap_drop:
+      - ALL
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=backend,environment=${ENVIRONMENT:-development}"
+
+  # Frontend Web Service
+  frontend:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/frontend-web.Dockerfile
+      args:
+        BUILD_DATE: ${BUILD_DATE}
+        VCS_REF: ${VCS_REF}
+        VERSION: ${VERSION:-latest}
+        VITE_API_URL: ${VITE_API_URL:-/api}
+    container_name: chainocracy-frontend
+    restart: unless-stopped
+    networks:
+      - chainocracy-network
+    environment:
+      NGINX_WORKER_PROCESSES: auto
+      NGINX_WORKER_CONNECTIONS: 1024
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/cache/nginx
+      - /var/run
+    user: "1001:1001"
+    cap_drop:
+      - ALL
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=frontend,environment=${ENVIRONMENT:-development}"
+
+  # Prometheus Monitoring
+  prometheus:
+    image: prom/prometheus:v2.48.1
+    container_name: chainocracy-prometheus
+    restart: unless-stopped
+    networks:
+      - monitoring-network
+      - chainocracy-network
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+      - '--web.external-url=http://localhost:9090'
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./config/prometheus/alert_rules.yml:/etc/prometheus/alert_rules.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "127.0.0.1:9090:9090"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    security_opt:
+      - no-new-privileges:true
+    user: "65534:65534"
+    cap_drop:
+      - ALL
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=prometheus,environment=${ENVIRONMENT:-development}"
+
+  # Grafana Dashboard
+  grafana:
+    image: grafana/grafana:10.2.3
+    container_name: chainocracy-grafana
+    restart: unless-stopped
+    networks:
+      - monitoring-network
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin123}
+      GF_USERS_ALLOW_SIGN_UP: false
+      GF_SECURITY_DISABLE_GRAVATAR: true
+      GF_SECURITY_COOKIE_SECURE: true
+      GF_SECURITY_COOKIE_SAMESITE: strict
+      GF_SECURITY_STRICT_TRANSPORT_SECURITY: true
+      GF_SECURITY_X_CONTENT_TYPE_OPTIONS: true
+      GF_SECURITY_X_XSS_PROTECTION: true
+      GF_SERVER_ROOT_URL: http://localhost:3001
+      GF_ANALYTICS_REPORTING_ENABLED: false
+      GF_ANALYTICS_CHECK_FOR_UPDATES: false
+      GF_LOG_MODE: console
+      GF_LOG_LEVEL: info
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./config/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro
+      - ./config/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml:ro
+      - ./config/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "127.0.0.1:3001:3000"
+    depends_on:
+      - prometheus
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    security_opt:
+      - no-new-privileges:true
+    user: "472:472"
+    cap_drop:
+      - ALL
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=grafana,environment=${ENVIRONMENT:-development}"
+
+  # Node Exporter for System Metrics
+  node-exporter:
+    image: prom/node-exporter:v1.7.0
+    container_name: chainocracy-node-exporter
+    restart: unless-stopped
+    networks:
+      - monitoring-network
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+      - '--collector.textfile.directory=/var/lib/node_exporter/textfile_collector'
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    ports:
+      - "127.0.0.1:9100:9100"
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    user: "65534:65534"
+    cap_drop:
+      - ALL
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=node-exporter,environment=${ENVIRONMENT:-development}"
+
+  # cAdvisor for Container Metrics
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    container_name: chainocracy-cadvisor
+    restart: unless-stopped
+    networks:
+      - monitoring-network
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    ports:
+      - "127.0.0.1:8081:8080"
+    devices:
+      - /dev/kmsg
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - SYS_ADMIN
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=cadvisor,environment=${ENVIRONMENT:-development}"
+
+  # Log Aggregator
+  fluentd:
+    image: fluent/fluentd:v1.16.2-debian-1.0
+    container_name: chainocracy-fluentd
+    restart: unless-stopped
+    networks:
+      - monitoring-network
+      - chainocracy-network
+    volumes:
+      - ./config/fluentd/fluent.conf:/fluentd/etc/fluent.conf:ro
+      - /var/log:/var/log:ro
+    ports:
+      - "127.0.0.1:24224:24224"
+      - "127.0.0.1:24224:24224/udp"
+    environment:
+      FLUENTD_CONF: fluent.conf
+      FLUENTD_OPT: -v
+    security_opt:
+      - no-new-privileges:true
+    user: "fluent:fluent"
+    cap_drop:
+      - ALL
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "service=fluentd,environment=${ENVIRONMENT:-development}"
 
