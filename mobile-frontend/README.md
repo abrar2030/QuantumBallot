@@ -117,34 +117,3 @@ For Expo Application Services build:
    eas build --platform ios     # for iOS
    eas build --platform android # for Android
    ```
-
-## Deployment
-
-### App Store (iOS)
-
-1. Create an App Store Connect account
-2. Register your app bundle identifier
-3. Submit the built IPA file to App Store Connect
-4. Complete the submission process including metadata and screenshots
-
-### Google Play Store (Android)
-
-1. Create a Google Play Console account
-2. Register your app package name
-3. Upload the built APK or AAB file to the Play Console
-4. Complete the submission process including metadata and screenshots
-
-## Compatibility
-
-The mobile application is designed to be compatible with:
-
-- iOS 17.4.1 or later
-- Android 13 or later
-- Expo SDK 49 or later
-
-## Related Resources
-
-- For backend API documentation, refer to the `backend-api` directory
-- For deployment infrastructure, check the `infrastructure` directory
-- For comprehensive system documentation, see the `docs` directory
-- For web frontend implementation, explore the `web-frontend` directory
