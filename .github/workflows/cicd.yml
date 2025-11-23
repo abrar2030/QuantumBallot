@@ -24,45 +24,87 @@ jobs:
         uses: actions/checkout@v4
 
       # -------------------------------
-      # Node + Prettier Setup
+      # Node setup (single step)
       # -------------------------------
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # Install dependencies from root package.json
-      - name: Install Node Dependencies
-        run: npm install
+      # -------------------------------
+      # Install deps per-project (if package.json exists)
+      # -------------------------------
+      - name: Install Node Dependencies (backend-api)
+        run: |
+          if [ -f "${BACKEND_DIR}/package.json" ]; then
+            echo "Installing node dependencies in ${BACKEND_DIR}"
+            cd "${BACKEND_DIR}"
+            npm ci
+          else
+            echo "No package.json in ${BACKEND_DIR}, skipping install"
+          fi
+
+      - name: Install Node Dependencies (web-frontend)
+        run: |
+          if [ -f "${WEB_FRONTEND_DIR}/package.json" ]; then
+            echo "Installing node dependencies in ${WEB_FRONTEND_DIR}"
+            cd "${WEB_FRONTEND_DIR}"
+            npm ci
+          else
+            echo "No package.json in ${WEB_FRONTEND_DIR}, skipping install"
+          fi
+
+      - name: Install Node Dependencies (mobile-frontend)
+        run: |
+          if [ -f "${MOBILE_FRONTEND_DIR}/package.json" ]; then
+            echo "Installing node dependencies in ${MOBILE_FRONTEND_DIR}"
+            cd "${MOBILE_FRONTEND_DIR}"
+            npm ci
+          else
+            echo "No package.json in ${MOBILE_FRONTEND_DIR}, skipping install"
+          fi
 
       # -------------------------------
-      # Prettier: backend (with Solidity)
+      # Prettier: backend (with Solidity plugin)
       # -------------------------------
       - name: Run Prettier Checks (backend-api)
         run: |
-          echo "=== Running Prettier (backend-api) ==="
-          npx prettier \
-            --plugin=prettier-plugin-solidity \
-            --check "$BACKEND_DIR/**/*.{js,jsx,ts,tsx,sol,json,html,css,md}"
+          if [ -f "${BACKEND_DIR}/package.json" ]; then
+            echo "=== Running Prettier (backend-api) ==="
+            cd "${BACKEND_DIR}"
+            npx prettier --plugin=prettier-plugin-solidity --check "**/*.{js,jsx,ts,tsx,sol,json,html,css,md}"
+          else
+            echo "No package.json in ${BACKEND_DIR}, skipping Prettier check"
+          fi
 
       # -------------------------------
       # Prettier: web-frontend
       # -------------------------------
       - name: Run Prettier Checks (web-frontend)
         run: |
-          echo "=== Running Prettier (web-frontend) ==="
-          npx prettier --check "$WEB_FRONTEND_DIR/**/*.{js,jsx,ts,tsx,json,html,css,md}"
+          if [ -f "${WEB_FRONTEND_DIR}/package.json" ]; then
+            echo "=== Running Prettier (web-frontend) ==="
+            cd "${WEB_FRONTEND_DIR}"
+            npx prettier --check "**/*.{js,jsx,ts,tsx,json,html,css,md}"
+          else
+            echo "No package.json in ${WEB_FRONTEND_DIR}, skipping Prettier check"
+          fi
 
       # -------------------------------
       # Prettier: mobile-frontend
       # -------------------------------
       - name: Run Prettier Checks (mobile-frontend)
         run: |
-          echo "=== Running Prettier (mobile-frontend) ==="
-          npx prettier --check "$MOBILE_FRONTEND_DIR/**/*.{js,jsx,ts,tsx,json,html,css,md}"
+          if [ -f "${MOBILE_FRONTEND_DIR}/package.json" ]; then
+            echo "=== Running Prettier (mobile-frontend) ==="
+            cd "${MOBILE_FRONTEND_DIR}"
+            npx prettier --check "**/*.{js,jsx,ts,tsx,json,html,css,md}"
+          else
+            echo "No package.json in ${MOBILE_FRONTEND_DIR}, skipping Prettier check"
+          fi
 
       # -------------------------------
       # Done
       # -------------------------------
       - name: Finalize Check
-        run: echo "All formatting checks completed successfully."
+        run: echo "All formatting checks completed (or were skipped where no package.json was found)."
