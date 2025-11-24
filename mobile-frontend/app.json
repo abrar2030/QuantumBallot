@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "config": {
@@ -33,11 +31,7 @@
       "favicon": "./assets/favicon.png",
       "bundler": "metro"
     },
-    "plugins": [
-      "expo-font",
-      "expo-secure-store",
-      "expo-av"
-    ],
+    "plugins": ["expo-font", "expo-secure-store", "expo-av"],
     "extra": {
       "eas": {
         "projectId": "23db0c99-ac06-4556-8c80-693fb773a032"

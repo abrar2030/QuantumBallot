@@ -20,14 +20,17 @@ The workflow architecture is designed with a main orchestrator workflow that det
 The main workflow serves as an orchestrator that detects changes in specific directories and triggers the appropriate component-specific workflows. This approach allows for efficient resource usage by only running workflows for components that have been modified.
 
 **Triggers:**
+
 - Push to `main` branch
 - Pull requests targeting `main` branch
 
 **Key Jobs:**
+
 1. **detect-changes**: Uses the `dorny/paths-filter` action to identify which components have been modified.
 2. **trigger-workflows**: Based on the detected changes, conditionally triggers the appropriate component-specific workflows using the `benc-uk/workflow-dispatch` action.
 
 **Dependencies:**
+
 - Requires `GITHUB_TOKEN` with workflow dispatch permissions
 
 ### Backend API Workflow (`backend-api.yml`)
@@ -35,22 +38,26 @@ The main workflow serves as an orchestrator that detects changes in specific dir
 This workflow handles the CI/CD pipeline for the Node.js backend API.
 
 **Triggers:**
+
 - Push to `main` branch with changes in the `backend-api/` directory
 - Pull requests targeting `main` branch with changes in the `backend-api/` directory
 - Manual trigger from the main workflow
 
 **Key Jobs:**
+
 1. **test**: Runs tests and linting across multiple Node.js versions (16.x, 18.x, 20.x).
 2. **build**: Creates a production build and uploads it as an artifact.
 3. **deploy**: Deploys the build to the production server using SSH and rsync.
 
 **Environment Variables and Secrets:**
+
 - `SSH_PRIVATE_KEY`: SSH key for server access
 - `PRODUCTION_HOST`: Hostname of the production server
 - `PRODUCTION_USER`: Username for SSH connection
 - `PRODUCTION_PATH`: Destination path on the production server
 
 **Deployment Process:**
+
 - Uses rsync to transfer files to the production server
 - Restarts the application using PM2 (process manager)
 
@@ -59,22 +66,26 @@ This workflow handles the CI/CD pipeline for the Node.js backend API.
 This workflow manages the CI/CD pipeline for the web frontend application.
 
 **Triggers:**
+
 - Push to `main` branch with changes in the `web-frontend/` directory
 - Pull requests targeting `main` branch with changes in the `web-frontend/` directory
 - Manual trigger from the main workflow
 
 **Key Jobs:**
+
 1. **test**: Runs tests and linting checks.
 2. **build**: Creates a production build and uploads it as an artifact.
 3. **deploy**: Deploys the build to the production server using SSH and rsync.
 
 **Environment Variables and Secrets:**
+
 - `SSH_PRIVATE_KEY`: SSH key for server access
 - `PRODUCTION_HOST`: Hostname of the production server
 - `PRODUCTION_USER`: Username for SSH connection
 - `PRODUCTION_PATH`: Destination path on the production server
 
 **Deployment Process:**
+
 - Uses rsync to transfer files to the production server
 - Reloads Nginx configuration if needed
 
@@ -83,11 +94,13 @@ This workflow manages the CI/CD pipeline for the web frontend application.
 This workflow handles the CI/CD pipeline for the mobile application built with React Native and Expo.
 
 **Triggers:**
+
 - Push to `main` branch with changes in the `mobile-frontend/` directory
 - Pull requests targeting `main` branch with changes in the `mobile-frontend/` directory
 - Manual trigger from the main workflow
 
 **Key Jobs:**
+
 1. **test**: Runs tests and linting checks.
 2. **build-android**: Builds the Android application using Expo EAS.
 3. **build-ios**: Builds the iOS application using Expo EAS (runs on macOS runner).
@@ -95,9 +108,11 @@ This workflow handles the CI/CD pipeline for the mobile application built with R
 5. **deploy-production**: For main branch, publishes a production update to Expo.
 
 **Environment Variables and Secrets:**
+
 - `EXPO_TOKEN`: Authentication token for Expo services
 
 **Platform-Specific Considerations:**
+
 - Android builds run on Ubuntu runners
 - iOS builds require macOS runners
 - Both use Expo EAS for building and publishing
@@ -107,18 +122,22 @@ This workflow handles the CI/CD pipeline for the mobile application built with R
 This workflow manages the documentation build and deployment process.
 
 **Triggers:**
+
 - Push to `main` branch with changes in the `docs/` directory
 - Pull requests targeting `main` branch with changes in the `docs/` directory
 - Manual trigger from the main workflow
 
 **Key Jobs:**
+
 1. **build**: Builds the documentation using Python and uploads it as an artifact.
 2. **deploy**: Deploys the documentation to GitHub Pages.
 
 **Environment Variables and Secrets:**
+
 - `GITHUB_TOKEN`: Used for GitHub Pages deployment
 
 **Documentation Build Process:**
+
 - Uses Python to build documentation (likely Sphinx or similar)
 - Deploys to GitHub Pages using the `peaceiris/actions-gh-pages` action
 
@@ -131,6 +150,7 @@ The workflows in this project are designed with the following dependencies:
    - **Test** → **Build** → **Deploy**
 
 This architecture ensures that:
+
 - Only affected components are processed when changes are made
 - Tests must pass before building
 - Building must succeed before deployment

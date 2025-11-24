@@ -78,6 +78,7 @@ chainocracy/
 We follow a feature branch workflow:
 
 1. Create a new branch for each feature or bug fix:
+
    ```bash
    git checkout -b feature/feature-name
    # or
@@ -85,6 +86,7 @@ We follow a feature branch workflow:
    ```
 
 2. Make your changes and commit them with descriptive messages:
+
    ```bash
    git commit -m "feat: add voter verification feature"
    # or
@@ -92,6 +94,7 @@ We follow a feature branch workflow:
    ```
 
 3. Push your branch to the remote repository:
+
    ```bash
    git push origin feature/feature-name
    ```
@@ -112,6 +115,7 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/) speci
 ```
 
 Types:
+
 - `feat`: A new feature
 - `fix`: A bug fix
 - `docs`: Documentation changes
@@ -145,20 +149,18 @@ Test files should be placed in a `__tests__` directory or have a `.test.ts` or `
 Example test:
 
 ```typescript
-import request from 'supertest';
-import app from '../src/app';
+import request from "supertest";
+import app from "../src/app";
 
-describe('Authentication API', () => {
-  it('should return a JWT token when valid credentials are provided', async () => {
-    const response = await request(app)
-      .post('/api/committee/login')
-      .send({
-        email: 'test@example.com',
-        password: 'password123'
-      });
+describe("Authentication API", () => {
+  it("should return a JWT token when valid credentials are provided", async () => {
+    const response = await request(app).post("/api/committee/login").send({
+      email: "test@example.com",
+      password: "password123",
+    });
 
     expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('token');
+    expect(response.body).toHaveProperty("token");
   });
 });
 ```
@@ -245,14 +247,14 @@ npm run test:e2e
 Example test:
 
 ```javascript
-describe('Login Flow', () => {
-  it('should allow a user to log in', () => {
-    cy.visit('/login');
-    cy.get('input[name="email"]').type('committee@example.com');
-    cy.get('input[name="password"]').type('password123');
+describe("Login Flow", () => {
+  it("should allow a user to log in", () => {
+    cy.visit("/login");
+    cy.get('input[name="email"]').type("committee@example.com");
+    cy.get('input[name="password"]').type("password123");
     cy.get('button[type="submit"]').click();
-    cy.url().should('include', '/dashboard');
-    cy.contains('Welcome').should('be.visible');
+    cy.url().should("include", "/dashboard");
+    cy.contains("Welcome").should("be.visible");
   });
 });
 ```
@@ -276,7 +278,7 @@ To add a new transaction type:
 
 ```typescript
 export interface CustomTransaction extends BaseTransaction {
-  type: 'CUSTOM_TYPE';
+  type: "CUSTOM_TYPE";
   customData: {
     // Custom data fields
   };
@@ -289,7 +291,7 @@ export interface CustomTransaction extends BaseTransaction {
 export function validateTransaction(transaction: Transaction): boolean {
   // Existing validation logic
 
-  if (transaction.type === 'CUSTOM_TYPE') {
+  if (transaction.type === "CUSTOM_TYPE") {
     // Custom validation logic
     return validateCustomTransaction(transaction as CustomTransaction);
   }
@@ -350,18 +352,18 @@ To add a new API endpoint:
 1. Create a new route file or add to an existing one in `src/routes/`:
 
 ```typescript
-import express from 'express';
-import { verifyJWT } from '../middleware/auth';
+import express from "express";
+import { verifyJWT } from "../middleware/auth";
 
 const router = express.Router();
 
 // Public endpoint
-router.get('/public-endpoint', (req, res) => {
+router.get("/public-endpoint", (req, res) => {
   // Implementation
 });
 
 // Protected endpoint
-router.post('/protected-endpoint', verifyJWT, (req, res) => {
+router.post("/protected-endpoint", verifyJWT, (req, res) => {
   // Implementation
 });
 
@@ -371,11 +373,11 @@ export default router;
 2. Register the route in `src/app.ts`:
 
 ```typescript
-import newRoutes from './routes/new-routes';
+import newRoutes from "./routes/new-routes";
 
 // Existing code
 
-app.use('/api/new-feature', newRoutes);
+app.use("/api/new-feature", newRoutes);
 ```
 
 ### Implementing Middleware
@@ -402,9 +404,9 @@ export function customMiddleware(req: Request, res: Response, next: NextFunction
 2. Use the middleware in your routes:
 
 ```typescript
-import { customMiddleware } from '../middleware/custom-middleware';
+import { customMiddleware } from "../middleware/custom-middleware";
 
-router.post('/endpoint', customMiddleware, (req, res) => {
+router.post("/endpoint", customMiddleware, (req, res) => {
   // Route handler
 });
 ```
@@ -492,14 +494,14 @@ export function useApp(): AppContextType {
 We use React Query for API integration:
 
 ```typescript
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '../api';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "../api";
 
 // Fetch data
 export function useElections() {
   return useQuery({
-    queryKey: ['elections'],
-    queryFn: () => api.get('/elections').then(res => res.data)
+    queryKey: ["elections"],
+    queryFn: () => api.get("/elections").then((res) => res.data),
   });
 }
 
@@ -508,10 +510,11 @@ export function useCreateElection() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (election) => api.post('/elections', election).then(res => res.data),
+    mutationFn: (election) =>
+      api.post("/elections", election).then((res) => res.data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['elections'] });
-    }
+      queryClient.invalidateQueries({ queryKey: ["elections"] });
+    },
   });
 }
 ```
@@ -678,6 +681,7 @@ const styles = StyleSheet.create({
 To debug the backend:
 
 1. Start the server in debug mode:
+
    ```bash
    cd backend-api
    npm run debug

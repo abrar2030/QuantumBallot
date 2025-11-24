@@ -46,6 +46,7 @@ Returns the entire blockchain data structure.
 **Authentication Required**: Yes (Committee)
 
 **Response Example**:
+
 ```json
 {
   "chain": [
@@ -56,7 +57,7 @@ Returns the entire blockchain data structure.
       "previousHash": "0",
       "hash": "0000a8c7d5f6e3b2a1c0d9e8f7b6a5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f",
       "nonce": 0
-    },
+    }
     // Additional blocks...
   ],
   "pendingTransactions": [],
@@ -72,6 +73,7 @@ Returns all pending transactions that haven't been included in a block yet.
 **Authentication Required**: Yes (Committee)
 
 **Response Example**:
+
 ```json
 [
   {
@@ -81,7 +83,7 @@ Returns all pending transactions that haven't been included in a block yet.
     "timestamp": 1650000123456,
     "signature": "3045022100a1b2c3d4e5f6...",
     "transactionId": "tx-789"
-  },
+  }
   // Additional pending transactions...
 ]
 ```
@@ -93,6 +95,7 @@ Returns all transactions from all blocks.
 **Authentication Required**: Yes (Committee)
 
 **Response Example**:
+
 ```json
 [
   {
@@ -103,7 +106,7 @@ Returns all transactions from all blocks.
     "signature": "3045022100a1b2c3d4e5f6...",
     "transactionId": "tx-789",
     "blockIndex": 2
-  },
+  }
   // Additional transactions...
 ]
 ```
@@ -115,6 +118,7 @@ Returns all blocks in the blockchain.
 **Authentication Required**: Yes (Committee)
 
 **Response Example**:
+
 ```json
 [
   {
@@ -124,7 +128,7 @@ Returns all blocks in the blockchain.
     "previousHash": "0",
     "hash": "0000a8c7d5f6e3b2a1c0d9e8f7b6a5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f",
     "nonce": 0
-  },
+  }
   // Additional blocks...
 ]
 ```
@@ -136,9 +140,11 @@ Returns a specific block by its index.
 **Authentication Required**: Yes (Committee)
 
 **Parameters**:
+
 - `index`: The index of the block to retrieve
 
 **Response Example**:
+
 ```json
 {
   "index": 2,
@@ -166,6 +172,7 @@ Creates a new transaction (vote).
 **Authentication Required**: Yes (Voter)
 
 **Request Body**:
+
 ```json
 {
   "fromAddress": "voter-123",
@@ -176,6 +183,7 @@ Creates a new transaction (vote).
 ```
 
 **Response Example**:
+
 ```json
 {
   "message": "Transaction added successfully",
@@ -197,6 +205,7 @@ Mines a new block with pending transactions.
 **Authentication Required**: Yes (Committee)
 
 **Response Example**:
+
 ```json
 {
   "message": "Block mined successfully",
@@ -222,6 +231,7 @@ Registers a new committee member.
 **Authentication Required**: Yes (Admin Committee)
 
 **Request Body**:
+
 ```json
 {
   "name": "John Doe",
@@ -232,6 +242,7 @@ Registers a new committee member.
 ```
 
 **Response Example**:
+
 ```json
 {
   "message": "Committee member registered successfully",
@@ -246,6 +257,7 @@ Authenticates a committee member and returns a JWT token.
 **Authentication Required**: No
 
 **Request Body**:
+
 ```json
 {
   "email": "john.doe@example.com",
@@ -254,6 +266,7 @@ Authenticates a committee member and returns a JWT token.
 ```
 
 **Response Example**:
+
 ```json
 {
   "message": "Login successful",
@@ -274,6 +287,7 @@ Returns the profile of the authenticated committee member.
 **Authentication Required**: Yes (Committee)
 
 **Response Example**:
+
 ```json
 {
   "id": "committee-123",
@@ -293,6 +307,7 @@ Creates a new election.
 **Authentication Required**: Yes (Committee)
 
 **Request Body**:
+
 ```json
 {
   "title": "Presidential Election 2024",
@@ -306,6 +321,7 @@ Creates a new election.
 ```
 
 **Response Example**:
+
 ```json
 {
   "message": "Election created successfully",
@@ -332,6 +348,7 @@ Returns all elections.
 **Authentication Required**: Yes
 
 **Response Example**:
+
 ```json
 [
   {
@@ -346,7 +363,7 @@ Returns all elections.
     "verificationRequirements": ["id", "email"],
     "createdBy": "committee-123",
     "createdAt": "2023-05-01T12:34:56.789Z"
-  },
+  }
   // Additional elections...
 ]
 ```
@@ -358,9 +375,11 @@ Returns a specific election by ID.
 **Authentication Required**: Yes
 
 **Parameters**:
+
 - `id`: The ID of the election to retrieve
 
 **Response Example**:
+
 ```json
 {
   "id": "election-789",
@@ -392,9 +411,11 @@ Updates an existing election.
 **Authentication Required**: Yes (Committee)
 
 **Parameters**:
+
 - `id`: The ID of the election to update
 
 **Request Body**:
+
 ```json
 {
   "title": "Updated Presidential Election 2024",
@@ -405,6 +426,7 @@ Updates an existing election.
 ```
 
 **Response Example**:
+
 ```json
 {
   "message": "Election updated successfully",
@@ -432,9 +454,11 @@ Deletes an election.
 **Authentication Required**: Yes (Committee)
 
 **Parameters**:
+
 - `id`: The ID of the election to delete
 
 **Response Example**:
+
 ```json
 {
   "message": "Election deleted successfully"
@@ -450,9 +474,11 @@ Adds a candidate to an election.
 **Authentication Required**: Yes (Committee)
 
 **Parameters**:
+
 - `electionId`: The ID of the election to add the candidate to
 
 **Request Body**:
+
 ```json
 {
   "name": "Jane Smith",
@@ -463,6 +489,7 @@ Adds a candidate to an election.
 ```
 
 **Response Example**:
+
 ```json
 {
   "message": "Candidate added successfully",
@@ -485,9 +512,11 @@ Returns all candidates for a specific election.
 **Authentication Required**: Yes
 
 **Parameters**:
+
 - `electionId`: The ID of the election to get candidates for
 
 **Response Example**:
+
 ```json
 [
   {
@@ -498,7 +527,7 @@ Returns all candidates for a specific election.
     "photoUrl": "https://example.com/photos/jane-smith.jpg",
     "electionId": "election-789",
     "createdAt": "2023-05-03T14:15:16.171Z"
-  },
+  }
   // Additional candidates...
 ]
 ```
@@ -510,10 +539,12 @@ Updates a candidate.
 **Authentication Required**: Yes (Committee)
 
 **Parameters**:
+
 - `electionId`: The ID of the election the candidate belongs to
 - `candidateId`: The ID of the candidate to update
 
 **Request Body**:
+
 ```json
 {
   "name": "Jane Smith",
@@ -524,6 +555,7 @@ Updates a candidate.
 ```
 
 **Response Example**:
+
 ```json
 {
   "message": "Candidate updated successfully",
@@ -547,10 +579,12 @@ Removes a candidate from an election.
 **Authentication Required**: Yes (Committee)
 
 **Parameters**:
+
 - `electionId`: The ID of the election the candidate belongs to
 - `candidateId`: The ID of the candidate to remove
 
 **Response Example**:
+
 ```json
 {
   "message": "Candidate removed successfully"
@@ -566,6 +600,7 @@ Registers a new voter.
 **Authentication Required**: No
 
 **Request Body**:
+
 ```json
 {
   "name": "Alice Johnson",
@@ -578,6 +613,7 @@ Registers a new voter.
 ```
 
 **Response Example**:
+
 ```json
 {
   "message": "Voter registration submitted successfully. Awaiting verification.",
@@ -592,6 +628,7 @@ Authenticates a voter and returns a JWT token.
 **Authentication Required**: No
 
 **Request Body**:
+
 ```json
 {
   "email": "alice.johnson@example.com",
@@ -600,6 +637,7 @@ Authenticates a voter and returns a JWT token.
 ```
 
 **Response Example**:
+
 ```json
 {
   "message": "Login successful",
@@ -620,6 +658,7 @@ Returns the profile of the authenticated voter.
 **Authentication Required**: Yes (Voter)
 
 **Response Example**:
+
 ```json
 {
   "id": "voter-123",
@@ -638,6 +677,7 @@ Returns all elections the authenticated voter is eligible to vote in.
 **Authentication Required**: Yes (Voter)
 
 **Response Example**:
+
 ```json
 [
   {
@@ -648,7 +688,7 @@ Returns all elections the authenticated voter is eligible to vote in.
     "endDate": "2024-11-03T23:59:59.000Z",
     "status": "upcoming",
     "hasVoted": false
-  },
+  }
   // Additional eligible elections...
 ]
 ```
@@ -660,6 +700,7 @@ Casts a vote in an election.
 **Authentication Required**: Yes (Voter)
 
 **Request Body**:
+
 ```json
 {
   "electionId": "election-789",
@@ -668,6 +709,7 @@ Casts a vote in an election.
 ```
 
 **Response Example**:
+
 ```json
 {
   "message": "Vote cast successfully",
@@ -683,9 +725,11 @@ Verifies a vote by its ID.
 **Authentication Required**: Yes (Voter)
 
 **Parameters**:
+
 - `voteId`: The ID of the vote to verify
 
 **Response Example**:
+
 ```json
 {
   "verified": true,
@@ -709,6 +753,7 @@ Returns all registered voters.
 **Authentication Required**: Yes (Committee)
 
 **Response Example**:
+
 ```json
 [
   {
@@ -718,7 +763,7 @@ Returns all registered voters.
     "phone": "+1234567890",
     "verificationStatus": "verified",
     "createdAt": "2023-02-01T00:00:00.000Z"
-  },
+  }
   // Additional voters...
 ]
 ```
@@ -730,9 +775,11 @@ Verifies a voter's identity.
 **Authentication Required**: Yes (Committee)
 
 **Parameters**:
+
 - `voterId`: The ID of the voter to verify
 
 **Request Body**:
+
 ```json
 {
   "verificationStatus": "verified"
@@ -740,6 +787,7 @@ Verifies a voter's identity.
 ```
 
 **Response Example**:
+
 ```json
 {
   "message": "Voter verified successfully",
@@ -760,9 +808,11 @@ Returns detailed results for a specific election.
 **Authentication Required**: Yes (Committee)
 
 **Parameters**:
+
 - `electionId`: The ID of the election to get results for
 
 **Response Example**:
+
 ```json
 {
   "electionId": "election-789",

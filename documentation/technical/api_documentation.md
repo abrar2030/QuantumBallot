@@ -13,12 +13,15 @@ This document provides comprehensive API documentation for the enhanced Chainocr
 Creates a new election contract with default configuration.
 
 **Parameters:**
+
 - `admin_address`: String - The address of the contract administrator
 
 **Returns:**
+
 - A new `ElectionContract` instance
 
 **Example:**
+
 ```rust
 let contract = ElectionContract::new("admin_address".to_string());
 ```
@@ -28,13 +31,16 @@ let contract = ElectionContract::new("admin_address".to_string());
 Creates a new election contract with custom configuration.
 
 **Parameters:**
+
 - `admin_address`: String - The address of the contract administrator
 - `config`: ContractConfig - Custom configuration parameters
 
 **Returns:**
+
 - A new `ElectionContract` instance with custom configuration
 
 **Example:**
+
 ```rust
 let config = ContractConfig {
     timelock_delay: 86400, // 24 hours
@@ -53,17 +59,21 @@ let contract = ElectionContract::with_config("admin_address".to_string(), config
 Announces a new election, setting the state to Announced.
 
 **Parameters:**
+
 - `caller`: &str - The address of the caller (must be admin)
 
 **Returns:**
+
 - `Ok(())` on success
 - `Err(ContractError)` on failure
 
 **Possible Errors:**
+
 - `AccessDenied` - If caller is not admin
 - `StateError` - If contract is in emergency stop mode
 
 **Example:**
+
 ```rust
 match contract.announce_election("admin_address") {
     Ok(_) => println!("Election announced successfully"),
@@ -76,17 +86,21 @@ match contract.announce_election("admin_address") {
 Starts an announced election, setting the state to Started.
 
 **Parameters:**
+
 - `caller`: &str - The address of the caller (must be admin)
 
 **Returns:**
+
 - `Ok(())` on success
 - `Err(ContractError)` on failure
 
 **Possible Errors:**
+
 - `AccessDenied` - If caller is not admin
 - `StateError` - If election is not in Announced state or contract is in emergency stop mode
 
 **Example:**
+
 ```rust
 match contract.start_election("admin_address") {
     Ok(_) => println!("Election started successfully"),
@@ -99,17 +113,21 @@ match contract.start_election("admin_address") {
 Ends an ongoing election, setting the state to Ended.
 
 **Parameters:**
+
 - `caller`: &str - The address of the caller (must be admin)
 
 **Returns:**
+
 - `Ok(())` on success
 - `Err(ContractError)` on failure
 
 **Possible Errors:**
+
 - `AccessDenied` - If caller is not admin
 - `StateError` - If election is not in Started or Happening state or contract is in emergency stop mode
 
 **Example:**
+
 ```rust
 match contract.end_election("admin_address") {
     Ok(_) => println!("Election ended successfully"),
@@ -124,6 +142,7 @@ match contract.end_election("admin_address") {
 Adds a candidate to the election.
 
 **Parameters:**
+
 - `caller`: &str - The address of the caller (must be admin)
 - `name`: &str - The name of the candidate
 - `code`: u64 - Unique identifier for the candidate
@@ -131,15 +150,18 @@ Adds a candidate to the election.
 - `proposal_url`: &str - URL to the candidate's proposal
 
 **Returns:**
+
 - `Ok(())` on success
 - `Err(ContractError)` on failure
 
 **Possible Errors:**
+
 - `AccessDenied` - If caller is not admin
 - `StateError` - If election is not in Announced state or contract is in emergency stop mode
 - `InvalidInput` - If name is empty or candidate code already exists
 
 **Example:**
+
 ```rust
 match contract.add_candidate("admin_address", "Candidate 1", 1, "Description for Candidate 1", "https://example.com/proposal1") {
     Ok(_) => println!("Candidate added successfully"),
@@ -154,21 +176,25 @@ match contract.add_candidate("admin_address", "Candidate 1", 1, "Description for
 Registers a user with Sybil resistance attributes.
 
 **Parameters:**
+
 - `caller`: &str - The address of the caller (must be admin)
 - `user_id`: &str - Unique identifier for the user
 - `identity_proof`: &str - Proof of user's identity
 - `social_graph_score`: u64 - User's social graph score for Sybil resistance
 
 **Returns:**
+
 - `Ok(())` on success
 - `Err(ContractError)` on failure
 
 **Possible Errors:**
+
 - `AccessDenied` - If caller is not admin
 - `InvalidInput` - If user_id is empty, social graph score is too low, or user already exists
 - `StateError` - If contract is in emergency stop mode
 
 **Example:**
+
 ```rust
 match contract.register_user("admin_address", "user1", "identity_proof_hash", 20) {
     Ok(_) => println!("User registered successfully"),
@@ -181,19 +207,23 @@ match contract.register_user("admin_address", "user1", "identity_proof_hash", 20
 Registers a user as a voter for the election.
 
 **Parameters:**
+
 - `caller`: &str - The address of the caller (must be admin)
 - `voter_id`: &str - Unique identifier for the voter (must be a registered user)
 
 **Returns:**
+
 - `Ok(())` on success
 - `Err(ContractError)` on failure
 
 **Possible Errors:**
+
 - `AccessDenied` - If caller is not admin
 - `StateError` - If election is not in Announced or Started state or contract is in emergency stop mode
 - `InvalidInput` - If user does not exist, is not verified, account is too new, or voter already registered
 
 **Example:**
+
 ```rust
 match contract.register_voter("admin_address", "user1") {
     Ok(_) => println!("Voter registered successfully"),
@@ -208,19 +238,23 @@ match contract.register_voter("admin_address", "user1") {
 Delegates a voter's voting power to another voter.
 
 **Parameters:**
+
 - `voter_id`: &str - The ID of the voter delegating their vote
 - `delegate_id`: &str - The ID of the voter receiving the delegation
 
 **Returns:**
+
 - `Ok(())` on success
 - `Err(ContractError)` on failure
 
 **Possible Errors:**
+
 - `StateError` - If election is not in Started or Happening state or contract is in emergency stop mode
 - `InvalidInput` - If either voter does not exist, voter has already voted, or circular delegation is detected
 - `OperationFailed` - If delegation is disabled in configuration
 
 **Example:**
+
 ```rust
 match contract.delegate_vote("voter1", "voter2") {
     Ok(_) => println!("Vote delegated successfully"),
@@ -233,19 +267,23 @@ match contract.delegate_vote("voter1", "voter2") {
 Places a vote for a candidate.
 
 **Parameters:**
+
 - `voter_id`: &str - The ID of the voter
 - `candidate_code`: u64 - The code of the candidate to vote for
 
 **Returns:**
+
 - `Ok(())` on success
 - `Err(ContractError)` on failure
 
 **Possible Errors:**
+
 - `StateError` - If election is not in Started or Happening state or contract is in emergency stop mode
 - `InvalidInput` - If voter does not exist, has already voted, or candidate does not exist
 - `OperationFailed` - If rate limit is exceeded, voting power is too low, or vote count would overflow
 
 **Example:**
+
 ```rust
 match contract.place_vote("voter1", 1) {
     Ok(_) => println!("Vote placed successfully"),
@@ -258,14 +296,17 @@ match contract.place_vote("voter1", 1) {
 Verifies that a voter's vote was correctly recorded.
 
 **Parameters:**
+
 - `voter_id`: &str - The ID of the voter
 
 **Returns:**
+
 - `Ok(true)` if vote is verified
 - `Ok(false)` if vote is not found or verification fails
 - `Err(ContractError)` on failure
 
 **Example:**
+
 ```rust
 match contract.verify_vote("voter1") {
     Ok(true) => println!("Vote verified successfully"),
@@ -281,20 +322,24 @@ match contract.verify_vote("voter1") {
 Proposes a timelock action for critical governance changes.
 
 **Parameters:**
+
 - `caller`: &str - The address of the caller (must be admin)
 - `action_type`: &str - Type of action (e.g., "ChangeAdmin", "UpdateConfig")
 - `description`: &str - Description of the action
 - `data`: &str - Data required for the action
 
 **Returns:**
+
 - `Ok(())` on success
 - `Err(ContractError)` on failure
 
 **Possible Errors:**
+
 - `AccessDenied` - If caller is not admin
 - `StateError` - If contract is in emergency stop mode
 
 **Example:**
+
 ```rust
 match contract.propose_timelock_action("admin_address", "ChangeAdmin", "Change admin to new address", "new_admin_address") {
     Ok(_) => println!("Timelock action proposed successfully"),
@@ -307,20 +352,24 @@ match contract.propose_timelock_action("admin_address", "ChangeAdmin", "Change a
 Executes a proposed timelock action after the delay period.
 
 **Parameters:**
+
 - `caller`: &str - The address of the caller (must be admin)
 - `index`: usize - Index of the timelock action to execute
 
 **Returns:**
+
 - `Ok(())` on success
 - `Err(ContractError)` on failure
 
 **Possible Errors:**
+
 - `AccessDenied` - If caller is not admin
 - `InvalidInput` - If index is out of bounds
 - `TimelockError` - If action is already executed, canceled, or delay period has not passed
 - `StateError` - If contract is in emergency stop mode
 
 **Example:**
+
 ```rust
 match contract.execute_timelock_action("admin_address", 0) {
     Ok(_) => println!("Timelock action executed successfully"),
@@ -333,20 +382,24 @@ match contract.execute_timelock_action("admin_address", 0) {
 Cancels a proposed timelock action before execution.
 
 **Parameters:**
+
 - `caller`: &str - The address of the caller (must be admin)
 - `index`: usize - Index of the timelock action to cancel
 
 **Returns:**
+
 - `Ok(())` on success
 - `Err(ContractError)` on failure
 
 **Possible Errors:**
+
 - `AccessDenied` - If caller is not admin
 - `InvalidInput` - If index is out of bounds
 - `TimelockError` - If action is already executed or canceled
 - `StateError` - If contract is in emergency stop mode
 
 **Example:**
+
 ```rust
 match contract.cancel_timelock_action("admin_address", 0) {
     Ok(_) => println!("Timelock action canceled successfully"),
@@ -361,16 +414,20 @@ match contract.cancel_timelock_action("admin_address", 0) {
 Activates emergency stop mode to halt contract operations.
 
 **Parameters:**
+
 - `caller`: &str - The address of the caller (must be admin)
 
 **Returns:**
+
 - `Ok(())` on success
 - `Err(ContractError)` on failure
 
 **Possible Errors:**
+
 - `AccessDenied` - If caller is not admin
 
 **Example:**
+
 ```rust
 match contract.emergency_stop("admin_address") {
     Ok(_) => println!("Emergency stop activated"),
@@ -383,16 +440,20 @@ match contract.emergency_stop("admin_address") {
 Deactivates emergency stop mode to resume contract operations.
 
 **Parameters:**
+
 - `caller`: &str - The address of the caller (must be admin)
 
 **Returns:**
+
 - `Ok(())` on success
 - `Err(ContractError)` on failure
 
 **Possible Errors:**
+
 - `AccessDenied` - If caller is not admin
 
 **Example:**
+
 ```rust
 match contract.resume_operations("admin_address") {
     Ok(_) => println!("Operations resumed"),
@@ -407,14 +468,17 @@ match contract.resume_operations("admin_address") {
 Gets the winning candidate after an election has ended.
 
 **Returns:**
+
 - `Ok(Some(Candidate))` if a winner is determined
 - `Ok(None)` if no candidates or tie
 - `Err(ContractError)` on failure
 
 **Possible Errors:**
+
 - `StateError` - If election is not in Ended state
 
 **Example:**
+
 ```rust
 match contract.winning_candidate() {
     Ok(Some(winner)) => println!("Winner: {}", winner),
@@ -428,9 +492,11 @@ match contract.winning_candidate() {
 Gets all registered candidates.
 
 **Returns:**
+
 - `Ok(Vec<Candidate>)` - List of all candidates
 
 **Example:**
+
 ```rust
 match contract.get_all_candidates() {
     Ok(candidates) => {
@@ -448,9 +514,11 @@ match contract.get_all_candidates() {
 Gets all registered voters.
 
 **Returns:**
+
 - `Ok(Vec<Voter>)` - List of all voters
 
 **Example:**
+
 ```rust
 match contract.get_all_voters() {
     Ok(voters) => {
@@ -468,9 +536,11 @@ match contract.get_all_voters() {
 Gets the current election state.
 
 **Returns:**
+
 - `Ok(ElectionState)` - Current state of the election
 
 **Example:**
+
 ```rust
 match contract.get_election_state() {
     Ok(state) => println!("Election state: {:?}", state),
@@ -483,9 +553,11 @@ match contract.get_election_state() {
 Gets all recorded events.
 
 **Returns:**
+
 - `Ok(Vec<Event>)` - List of all events
 
 **Example:**
+
 ```rust
 match contract.get_events() {
     Ok(events) => {
@@ -503,9 +575,11 @@ match contract.get_events() {
 Gets all vote records for transparent counting.
 
 **Returns:**
+
 - `Ok(Vec<VoteRecord>)` - List of all vote records
 
 **Example:**
+
 ```rust
 match contract.get_vote_records() {
     Ok(records) => {
@@ -523,9 +597,11 @@ match contract.get_vote_records() {
 Gets all pending timelock actions.
 
 **Returns:**
+
 - `Ok(Vec<TimelockAction>)` - List of pending timelock actions
 
 **Example:**
+
 ```rust
 match contract.get_pending_timelocks() {
     Ok(timelocks) => {
@@ -545,13 +621,16 @@ match contract.get_pending_timelocks() {
 Loads candidate data from an external source.
 
 **Parameters:**
+
 - `caller`: &str - The address of the caller (must be admin)
 
 **Returns:**
+
 - `Ok(())` on success
 - `Err(Error)` on failure
 
 **Example:**
+
 ```rust
 match contract.load_candidate_data("admin_address").await {
     Ok(_) => println!("Candidate data loaded successfully"),
@@ -564,13 +643,16 @@ match contract.load_candidate_data("admin_address").await {
 Loads voter data from an external source.
 
 **Parameters:**
+
 - `caller`: &str - The address of the caller (must be admin)
 
 **Returns:**
+
 - `Ok(())` on success
 - `Err(Error)` on failure
 
 **Example:**
+
 ```rust
 match contract.load_voter_data("admin_address").await {
     Ok(_) => println!("Voter data loaded successfully"),

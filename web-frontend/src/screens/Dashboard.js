@@ -218,43 +218,41 @@ function Dashboard() {
                   className: "gap-1",
                   children:
                     data &&
-                    data
-                      .slice(0, 5)
-                      .map((party) =>
-                        _jsxs(
-                          "div",
-                          {
-                            className:
-                              "grid grid-cols-3 sm:grid-cols-3 gap-3 p-0.5",
-                            children: [
-                              _jsx("div", {
-                                className: "col-span-1",
-                                children: _jsx("img", {
-                                  src: party.partyImage ?? "",
-                                  alt: party.name,
-                                  width: "32",
-                                  height: "32",
-                                }),
+                    data.slice(0, 5).map((party) =>
+                      _jsxs(
+                        "div",
+                        {
+                          className:
+                            "grid grid-cols-3 sm:grid-cols-3 gap-3 p-0.5",
+                          children: [
+                            _jsx("div", {
+                              className: "col-span-1",
+                              children: _jsx("img", {
+                                src: party.partyImage ?? "",
+                                alt: party.name,
+                                width: "32",
+                                height: "32",
                               }),
-                              _jsx("div", {
-                                className: "col-span-1",
-                                children: _jsx("span", {
-                                  className: "font-inria-sans text-sm",
-                                  children: party.acronym,
-                                }),
+                            }),
+                            _jsx("div", {
+                              className: "col-span-1",
+                              children: _jsx("span", {
+                                className: "font-inria-sans text-sm",
+                                children: party.acronym,
                               }),
-                              _jsx("div", {
-                                className: "col-span-1",
-                                children: _jsxs("span", {
-                                  className: "font-inria-sans text-sm",
-                                  children: [party.numVotes, " K votes"],
-                                }),
+                            }),
+                            _jsx("div", {
+                              className: "col-span-1",
+                              children: _jsxs("span", {
+                                className: "font-inria-sans text-sm",
+                                children: [party.numVotes, " K votes"],
                               }),
-                            ],
-                          },
-                          party.party,
-                        ),
+                            }),
+                          ],
+                        },
+                        party.party,
                       ),
+                    ),
                 }),
               ],
             }),

@@ -196,7 +196,7 @@ Before deploying, ensure you have:
    Add the following content:
 
    ```yaml
-   version: '3.8'
+   version: "3.8"
 
    services:
      backend:
@@ -452,9 +452,7 @@ For improved SEO and performance, you can deploy the web frontend with server-si
        "updates": {
          "fallbackToCacheTimeout": 0
        },
-       "assetBundlePatterns": [
-         "**/*"
-       ],
+       "assetBundlePatterns": ["**/*"],
        "ios": {
          "supportsTablet": true,
          "bundleIdentifier": "com.chainocracy.voter",
@@ -497,9 +495,7 @@ For improved SEO and performance, you can deploy the web frontend with server-si
        "updates": {
          "fallbackToCacheTimeout": 0
        },
-       "assetBundlePatterns": [
-         "**/*"
-       ],
+       "assetBundlePatterns": ["**/*"],
        "android": {
          "adaptiveIcon": {
            "foregroundImage": "./assets/adaptive-icon.png",
@@ -596,6 +592,7 @@ The Chainocracy system uses LevelDB for blockchain data storage. This is embedde
 2. **Configure the application to use this directory**:
 
    In your `.env` file:
+
    ```
    DATABASE_PATH=/var/chainocracy/data/blockchain
    ```
@@ -642,6 +639,7 @@ The Chainocracy system uses LevelDB for blockchain data storage. This is embedde
    ```
 
    Add the following line to run the backup daily at 2 AM:
+
    ```
    0 2 * * * /opt/chainocracy/backup.sh
    ```
@@ -715,28 +713,28 @@ For a production environment, multiple blockchain nodes are recommended:
 ### Application Security
 
 1. **Secure environment variables**:
-
    - Use a `.env` file that is not committed to version control
    - Set restrictive permissions: `chmod 600 .env`
 
 2. **Implement rate limiting**:
 
    ```javascript
-   const rateLimit = require('express-rate-limit');
+   const rateLimit = require("express-rate-limit");
 
    const apiLimiter = rateLimit({
      windowMs: 15 * 60 * 1000, // 15 minutes
      max: 100, // limit each IP to 100 requests per windowMs
-     message: 'Too many requests from this IP, please try again after 15 minutes'
+     message:
+       "Too many requests from this IP, please try again after 15 minutes",
    });
 
-   app.use('/api/', apiLimiter);
+   app.use("/api/", apiLimiter);
    ```
 
 3. **Set security headers with Helmet**:
 
    ```javascript
-   const helmet = require('helmet');
+   const helmet = require("helmet");
    app.use(helmet());
    ```
 
@@ -792,17 +790,17 @@ For a production environment, multiple blockchain nodes are recommended:
      scrape_interval: 15s
 
    scrape_configs:
-     - job_name: 'prometheus'
+     - job_name: "prometheus"
        static_configs:
-         - targets: ['localhost:9090']
+         - targets: ["localhost:9090"]
 
-     - job_name: 'node'
+     - job_name: "node"
        static_configs:
-         - targets: ['localhost:9100']
+         - targets: ["localhost:9100"]
 
-     - job_name: 'chainocracy-backend'
+     - job_name: "chainocracy-backend"
        static_configs:
-         - targets: ['localhost:3010']
+         - targets: ["localhost:3010"]
    ```
 
 2. **Install and configure Grafana**:
@@ -839,21 +837,21 @@ For a production environment, multiple blockchain nodes are recommended:
 1. **Implement health check endpoints**:
 
    ```javascript
-   app.get('/health', (req, res) => {
-     res.status(200).json({ status: 'UP' });
+   app.get("/health", (req, res) => {
+     res.status(200).json({ status: "UP" });
    });
 
-   app.get('/health/detailed', (req, res) => {
+   app.get("/health/detailed", (req, res) => {
      // Check database connection, blockchain status, etc.
      const dbStatus = checkDatabaseConnection();
      const blockchainStatus = checkBlockchainStatus();
 
      res.status(200).json({
-       status: dbStatus && blockchainStatus ? 'UP' : 'DOWN',
+       status: dbStatus && blockchainStatus ? "UP" : "DOWN",
        components: {
-         database: { status: dbStatus ? 'UP' : 'DOWN' },
-         blockchain: { status: blockchainStatus ? 'UP' : 'DOWN' }
-       }
+         database: { status: dbStatus ? "UP" : "DOWN" },
+         blockchain: { status: blockchainStatus ? "UP" : "DOWN" },
+       },
      });
    });
    ```
@@ -861,22 +859,24 @@ For a production environment, multiple blockchain nodes are recommended:
 2. **Set up application logging**:
 
    ```javascript
-   const winston = require('winston');
+   const winston = require("winston");
 
    const logger = winston.createLogger({
-     level: 'info',
+     level: "info",
      format: winston.format.json(),
-     defaultMeta: { service: 'chainocracy-backend' },
+     defaultMeta: { service: "chainocracy-backend" },
      transports: [
-       new winston.transports.File({ filename: 'error.log', level: 'error' }),
-       new winston.transports.File({ filename: 'combined.log' })
-     ]
+       new winston.transports.File({ filename: "error.log", level: "error" }),
+       new winston.transports.File({ filename: "combined.log" }),
+     ],
    });
 
-   if (process.env.NODE_ENV !== 'production') {
-     logger.add(new winston.transports.Console({
-       format: winston.format.simple()
-     }));
+   if (process.env.NODE_ENV !== "production") {
+     logger.add(
+       new winston.transports.Console({
+         format: winston.format.simple(),
+       }),
+     );
    }
    ```
 
@@ -944,6 +944,7 @@ For a production environment, multiple blockchain nodes are recommended:
    ```
 
    Add the following line:
+
    ```
    0 3 * * * /opt/chainocracy/s3-backup.sh
    ```
@@ -1040,12 +1041,10 @@ For a production environment, multiple blockchain nodes are recommended:
 ### Vertical Scaling
 
 1. **Increase server resources**:
-
    - Upgrade CPU, RAM, and disk space as needed
    - Monitor resource usage to determine when scaling is necessary
 
 2. **Optimize application performance**:
-
    - Implement caching
    - Optimize database queries
    - Use worker threads for CPU-intensive tasks
@@ -1055,19 +1054,16 @@ For a production environment, multiple blockchain nodes are recommended:
 ### Common Issues
 
 1. **Application won't start**:
-
    - Check logs: `pm2 logs chainocracy-backend`
    - Verify environment variables
    - Check for port conflicts: `sudo netstat -tulpn | grep 3010`
 
 2. **Database errors**:
-
    - Check database directory permissions
    - Verify database path in configuration
    - Check disk space: `df -h`
 
 3. **Blockchain synchronization issues**:
-
    - Check network connectivity between nodes
    - Verify node configuration
    - Check for firewall rules blocking communication

@@ -103,31 +103,27 @@ export function DataTable({ columns, data }) {
             }),
             _jsx(TableBody, {
               children: table.getRowModel().rows?.length
-                ? table
-                    .getRowModel()
-                    .rows.map((row) =>
-                      _jsx(
-                        TableRow,
-                        {
-                          "data-state": row.getIsSelected() && "selected",
-                          children: row
-                            .getVisibleCells()
-                            .map((cell) =>
-                              _jsx(
-                                TableCell,
-                                {
-                                  children: flexRender(
-                                    cell.column.columnDef.cell,
-                                    cell.getContext(),
-                                  ),
-                                },
-                                cell.id,
+                ? table.getRowModel().rows.map((row) =>
+                    _jsx(
+                      TableRow,
+                      {
+                        "data-state": row.getIsSelected() && "selected",
+                        children: row.getVisibleCells().map((cell) =>
+                          _jsx(
+                            TableCell,
+                            {
+                              children: flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext(),
                               ),
-                            ),
-                        },
-                        row.id,
-                      ),
-                    )
+                            },
+                            cell.id,
+                          ),
+                        ),
+                      },
+                      row.id,
+                    ),
+                  )
                 : _jsx(TableRow, {
                     children: _jsx(TableCell, {
                       colSpan: columns.length,

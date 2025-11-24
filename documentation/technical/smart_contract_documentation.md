@@ -22,6 +22,7 @@ The Chainocracy smart contract system is implemented in Rust and consists of sev
 ### Core Structures
 
 #### ElectionState
+
 ```rust
 pub enum ElectionState {
     Announced,
@@ -30,9 +31,11 @@ pub enum ElectionState {
     Ended,
 }
 ```
+
 Represents the current state of an election, controlling which operations are allowed.
 
 #### Role
+
 ```rust
 pub enum Role {
     Admin,
@@ -41,9 +44,11 @@ pub enum Role {
     Observer,
 }
 ```
+
 Defines the roles users can have in the system, used for access control.
 
 #### User
+
 ```rust
 pub struct User {
     pub identifier: String,
@@ -55,9 +60,11 @@ pub struct User {
     pub registration_time: u64,
 }
 ```
+
 Stores user information with Sybil resistance attributes.
 
 #### Candidate
+
 ```rust
 pub struct Candidate {
     pub name: String,
@@ -70,9 +77,11 @@ pub struct Candidate {
     pub proposal_url: String,
 }
 ```
+
 Represents a candidate in an election with proposal verification.
 
 #### Voter
+
 ```rust
 pub struct Voter {
     pub identifier: String,
@@ -85,9 +94,11 @@ pub struct Voter {
     pub vote_weight: f64,
 }
 ```
+
 Stores voter information with delegation and quadratic voting support.
 
 #### Event
+
 ```rust
 pub struct Event {
     pub event_type: String,
@@ -98,9 +109,11 @@ pub struct Event {
     pub transaction_hash: Option<String>,
 }
 ```
+
 Records important state changes for transparency.
 
 #### TimelockAction
+
 ```rust
 pub struct TimelockAction {
     pub action_type: String,
@@ -113,9 +126,11 @@ pub struct TimelockAction {
     pub data: String,
 }
 ```
+
 Represents a governance action subject to a timelock delay.
 
 #### VoteRecord
+
 ```rust
 pub struct VoteRecord {
     pub voter_id: String,
@@ -125,9 +140,11 @@ pub struct VoteRecord {
     pub vote_hash: String,
 }
 ```
+
 Records vote details for transparent counting and verification.
 
 #### ContractConfig
+
 ```rust
 pub struct ContractConfig {
     pub candidate_data_url: String,
@@ -143,6 +160,7 @@ pub struct ContractConfig {
     pub delegation_enabled: bool,
 }
 ```
+
 Configurable parameters for the contract.
 
 ### Error Handling
@@ -457,6 +475,7 @@ fn emit_event(&self, event_type: &str, data: &str, emitted_by: &str)
 ```
 
 Events include:
+
 - ElectionAnnounced
 - ElectionStarted
 - ElectionEnded
@@ -499,27 +518,32 @@ let contract = ElectionContract::with_config("admin_address".to_string(), config
 A typical election lifecycle:
 
 1. Announce the election:
+
    ```rust
    contract.announce_election("admin_address")?;
    ```
 
 2. Register users and voters:
+
    ```rust
    contract.register_user("admin_address", "user1", "identity_proof", 20)?;
    contract.register_voter("admin_address", "user1")?;
    ```
 
 3. Add candidates:
+
    ```rust
    contract.add_candidate("admin_address", "Candidate 1", 1, "Description", "https://example.com/proposal1")?;
    ```
 
 4. Start the election:
+
    ```rust
    contract.start_election("admin_address")?;
    ```
 
 5. Users vote or delegate:
+
    ```rust
    contract.delegate_vote("user1", "user2")?;
    // or
@@ -527,6 +551,7 @@ A typical election lifecycle:
    ```
 
 6. End the election:
+
    ```rust
    contract.end_election("admin_address")?;
    ```

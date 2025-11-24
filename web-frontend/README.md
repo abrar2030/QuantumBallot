@@ -55,27 +55,37 @@ The web frontend is organized as follows:
 ### Installation Steps
 
 1. Install dependencies:
+
    ```
    npm install
    ```
+
    or
+
    ```
    yarn install
    ```
+
    or
+
    ```
    pnpm install
    ```
 
 2. Start the development server:
+
    ```
    npm run dev
    ```
+
    or
+
    ```
    yarn dev
    ```
+
    or
+
    ```
    pnpm dev
    ```
@@ -113,14 +123,19 @@ The web frontend is organized as follows:
 To build the application for production:
 
 1. Run the build command:
+
    ```
    npm run build
    ```
+
    or
+
    ```
    yarn build
    ```
+
    or
+
    ```
    pnpm build
    ```

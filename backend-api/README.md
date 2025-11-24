@@ -1,11 +1,13 @@
 # Comprehensive Test Suite for Chainocracy Backend
 
 ## Overview
+
 This test suite provides comprehensive testing for the Chainocracy backend, covering all core modules, API routes, and security flows. The tests are designed to validate functionality, ensure data integrity, and catch potential issues before they reach production.
 
 ## Test Coverage
 
 ### Core Modules
+
 - **Crypto Module**: Encryption/decryption, key generation, identifier creation
 - **Blockchain Module**: Block creation, transaction processing, chain validation
 - **Committee Module**: User management, authentication, voter registration
@@ -13,6 +15,7 @@ This test suite provides comprehensive testing for the Chainocracy backend, cove
 - **Middleware**: JWT verification, credentials validation
 
 ### Test Types
+
 - **Unit Tests**: Testing individual functions and components
 - **Integration Tests**: Testing interactions between modules
 - **API Tests**: Testing HTTP endpoints and responses

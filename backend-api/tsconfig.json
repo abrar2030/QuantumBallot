@@ -6,10 +6,8 @@
     "rootDir": "./src",
     "target": "ES2019",
     "module": "CommonJS",
-    "moduleResolution": "node",    
-    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true
   },
-  "include": [
-    "src/**/*"
-  ],
+  "include": ["src/**/*"]
 }

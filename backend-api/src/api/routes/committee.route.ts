@@ -383,13 +383,11 @@ router.post("/auth-mobile", async (req, res) => {
     }); // Let's set secure: false for now.
 
     if (ans !== null) {
-      return res
-        .status(201)
-        .send({
-          accessToken: accessToken,
-          email: ans.email,
-          port: PROVINCES_PORT[ans.province],
-        });
+      return res.status(201).send({
+        accessToken: accessToken,
+        email: ans.email,
+        port: PROVINCES_PORT[ans.province],
+      });
     } else {
       return res.send({ note: "Rejected. Something went wrong ..." });
     }
@@ -435,15 +433,13 @@ router.post("/auth-web", async (req, res) => {
     }); // Let's set secure: false for now.
 
     if (ans !== null) {
-      return res
-        .status(201)
-        .send({
-          accessToken: accessToken,
-          refreshToken: refreshToken,
-          username: username,
-          name: ans.name,
-          role: ans.role,
-        });
+      return res.status(201).send({
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        username: username,
+        name: ans.name,
+        role: ans.role,
+      });
     } else {
       return res.send({ note: "Rejected. Something went wrong ..." });
     }

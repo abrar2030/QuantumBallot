@@ -7,6 +7,7 @@ This security audit was conducted on the Chainocracy project's smart contract im
 ## Scope
 
 The audit covered:
+
 - Code quality and structure
 - Potential security vulnerabilities
 - Access control mechanisms

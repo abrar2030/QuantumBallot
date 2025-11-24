@@ -13,6 +13,7 @@ A full-stack Web and Mobile application for American elections using Blockchain 
 > **Note**: This Project is currently under active development. Features and functionalities are being added and improved continuously to enhance user experience.
 
 ## Table of Contents
+
 - [Overview](#overview)
 - [Project Structure](#project-structure)
 - [Features](#features)
@@ -30,10 +31,10 @@ A full-stack Web and Mobile application for American elections using Blockchain 
 
 Chainocracy is a comprehensive election management system that leverages blockchain technology to ensure secure, transparent, and tamper-proof elections in America. The platform consists of multiple components:
 
-* **Web Frontend**: For election committee members and administrators
-* **Mobile Frontend**: For voters to cast their votes securely
-* **Backend API**: Handles business logic and blockchain operations
-* **Blockchain Implementation**: Core technology ensuring election integrity
+- **Web Frontend**: For election committee members and administrators
+- **Mobile Frontend**: For voters to cast their votes securely
+- **Backend API**: Handles business logic and blockchain operations
+- **Blockchain Implementation**: Core technology ensuring election integrity
 
 The system allows committee members to seamlessly access the application through their browsers, while voters have the convenience of utilizing their smartphones, whether running on iOS or Android.
 
@@ -55,124 +56,134 @@ chainocracy/
 
 The backend is built with Node.js and TypeScript, providing RESTful APIs for both web and mobile clients. It includes:
 
-* Blockchain implementation
-* Authentication and authorization
-* Election management
-* Vote processing and verification
-* Real-time updates via Socket.IO
+- Blockchain implementation
+- Authentication and authorization
+- Election management
+- Vote processing and verification
+- Real-time updates via Socket.IO
 
 ### Web Frontend
 
 A React-based web application with TypeScript and Tailwind CSS, designed for election committee members to:
 
-* Manage elections
-* Monitor voting progress
-* View election results
-* Manage candidates
-* Verify voter identities
-* Access blockchain details for transparency
+- Manage elections
+- Monitor voting progress
+- View election results
+- Manage candidates
+- Verify voter identities
+- Access blockchain details for transparency
 
 ### Mobile Frontend
 
 A React Native application for voters that provides:
 
-* Secure authentication
-* Candidate information
-* Voting interface
-* QR code scanning for verification
-* Real-time election updates
-* Vote confirmation
+- Secure authentication
+- Candidate information
+- Voting interface
+- QR code scanning for verification
+- Real-time election updates
+- Vote confirmation
 
 ### Documentation
 
 Comprehensive documentation using Sphinx, including:
 
-* API documentation
-* System architecture
-* User guides
-* Security protocols
+- API documentation
+- System architecture
+- User guides
+- Security protocols
 
 ## Features
 
 ### Election Management
-* Create and configure elections
-* Set election parameters (start/end dates, eligible voters)
-* Add and manage candidates
-* Monitor election progress in real-time
+
+- Create and configure elections
+- Set election parameters (start/end dates, eligible voters)
+- Add and manage candidates
+- Monitor election progress in real-time
 
 ### Voter Experience
-* Secure voter registration and authentication
-* View candidate information
-* Cast votes securely
-* Verify vote submission
-* View election results
+
+- Secure voter registration and authentication
+- View candidate information
+- Cast votes securely
+- Verify vote submission
+- View election results
 
 ### Blockchain Integration
-* Immutable record of all votes
-* Transparent verification process
-* Prevention of double-voting
-* Cryptographic security
-* Decentralized validation
+
+- Immutable record of all votes
+- Transparent verification process
+- Prevention of double-voting
+- Cryptographic security
+- Decentralized validation
 
 ### Security Features
-* Two-factor authentication
-* Encryption of sensitive data
-* QR code verification
-* Audit trails
-* Secure key management
+
+- Two-factor authentication
+- Encryption of sensitive data
+- QR code verification
+- Audit trails
+- Secure key management
 
 ### Analytics and Reporting
-* Real-time election statistics
-* Voter turnout analysis
-* Geographic voting patterns
-* Result visualization
-* Exportable reports
+
+- Real-time election statistics
+- Voter turnout analysis
+- Geographic voting patterns
+- Result visualization
+- Exportable reports
 
 ## Technology Stack
 
 ### Backend
-* **Runtime**: Node.js
-* **Language**: TypeScript
-* **Framework**: Express
-* **Database**: LevelDB (for blockchain)
-* **Authentication**: JWT, bcrypt
-* **Real-time Communication**: Socket.IO
-* **Other Libraries**: crypto-js, nodemailer, qrcode, speakeasy
+
+- **Runtime**: Node.js
+- **Language**: TypeScript
+- **Framework**: Express
+- **Database**: LevelDB (for blockchain)
+- **Authentication**: JWT, bcrypt
+- **Real-time Communication**: Socket.IO
+- **Other Libraries**: crypto-js, nodemailer, qrcode, speakeasy
 
 ### Web Frontend
-* **Framework**: React
-* **Language**: TypeScript
-* **Styling**: Tailwind CSS, SCSS
-* **State Management**: React Query
-* **UI Components**: Radix UI, Material UI
-* **Data Visualization**: Recharts, MUI X-Charts
-* **Form Handling**: React Hook Form, Zod
-* **Testing**: Vitest, Testing Library
+
+- **Framework**: React
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS, SCSS
+- **State Management**: React Query
+- **UI Components**: Radix UI, Material UI
+- **Data Visualization**: Recharts, MUI X-Charts
+- **Form Handling**: React Hook Form, Zod
+- **Testing**: Vitest, Testing Library
 
 ### Mobile Frontend
-* **Framework**: React Native (Expo)
-* **Language**: TypeScript
-* **Navigation**: React Navigation
-* **UI Components**: React Native Paper
-* **Authentication**: Expo Secure Store
-* **Camera/QR**: Expo Camera, Expo Barcode Scanner
-* **Other**: React Native SVG, Vector Icons
+
+- **Framework**: React Native (Expo)
+- **Language**: TypeScript
+- **Navigation**: React Navigation
+- **UI Components**: React Native Paper
+- **Authentication**: Expo Secure Store
+- **Camera/QR**: Expo Camera, Expo Barcode Scanner
+- **Other**: React Native SVG, Vector Icons
 
 ### Blockchain
-* Custom implementation with:
-  * Proof of Work consensus
-  * Cryptographic hashing
-  * Digital signatures
-  * Distributed ledger
-  * Smart contracts for election rules
+
+- Custom implementation with:
+  - Proof of Work consensus
+  - Cryptographic hashing
+  - Digital signatures
+  - Distributed ledger
+  - Smart contracts for election rules
 
 ## Installation and Setup
 
 ### Prerequisites
-* Node.js (v16+)
-* npm or yarn
-* Expo CLI (for mobile development)
-* Git
+
+- Node.js (v16+)
+- npm or yarn
+- Expo CLI (for mobile development)
+- Git
 
 ```bash
 # Clone the repository
@@ -196,13 +207,13 @@ The project maintains comprehensive test coverage across all components to ensur
 
 ### Test Coverage
 
-| Component | Coverage | Status |
-|-----------|----------|--------|
-| Backend API | 92% | ✅ |
-| Web Frontend | 85% | ✅ |
-| Mobile Frontend | 83% | ✅ |
-| Blockchain Core | 90% | ✅ |
-| Overall | 87% | ✅ |
+| Component       | Coverage | Status |
+| --------------- | -------- | ------ |
+| Backend API     | 92%      | ✅     |
+| Web Frontend    | 85%      | ✅     |
+| Mobile Frontend | 83%      | ✅     |
+| Blockchain Core | 90%      | ✅     |
+| Overall         | 87%      | ✅     |
 
 ### Running Tests
 

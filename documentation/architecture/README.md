@@ -199,9 +199,9 @@ interface Block {
 }
 
 interface Transaction {
-  fromAddress: string;  // Voter's public key
-  toAddress: string;    // Candidate's ID
-  amount: number;       // Always 1 for votes
+  fromAddress: string; // Voter's public key
+  toAddress: string; // Candidate's ID
+  amount: number; // Always 1 for votes
   timestamp: number;
   signature: string;
   transactionId: string;
@@ -224,9 +224,9 @@ interface Election {
   description: string;
   startDate: Date;
   endDate: Date;
-  status: 'upcoming' | 'active' | 'completed';
-  resultVisibility: 'immediate' | 'delayed';
-  voterAnonymityLevel: 'low' | 'medium' | 'high';
+  status: "upcoming" | "active" | "completed";
+  resultVisibility: "immediate" | "delayed";
+  voterAnonymityLevel: "low" | "medium" | "high";
   verificationRequirements: string[];
   createdBy: string;
   createdAt: Date;
@@ -253,7 +253,7 @@ interface CommitteeMember {
   name: string;
   email: string;
   passwordHash: string;
-  role: 'admin' | 'member';
+  role: "admin" | "member";
   createdAt: Date;
   updatedAt?: Date;
 }
@@ -264,11 +264,11 @@ interface Voter {
   email: string;
   phone: string;
   passwordHash: string;
-  verificationStatus: 'pending' | 'verified' | 'rejected';
+  verificationStatus: "pending" | "verified" | "rejected";
   idDocumentUrl: string;
   selfieUrl: string;
   publicKey: string;
-  privateKey: string;  // Encrypted, only stored temporarily
+  privateKey: string; // Encrypted, only stored temporarily
   createdAt: Date;
   updatedAt?: Date;
 }
@@ -357,6 +357,7 @@ The architecture is designed to accommodate future enhancements:
 **Context**: The system requires a specialized blockchain focused on voting with specific transaction types and validation rules.
 
 **Consequences**:
+
 - Provides complete control over the blockchain implementation
 - Allows for optimization specific to voting use cases
 - Requires more development effort and testing
@@ -369,6 +370,7 @@ The architecture is designed to accommodate future enhancements:
 **Context**: The system needs secure authentication that works well with both web and mobile clients.
 
 **Consequences**:
+
 - Stateless authentication simplifies scaling
 - Provides good security with proper implementation
 - Requires careful token management
@@ -381,6 +383,7 @@ The architecture is designed to accommodate future enhancements:
 **Context**: Users need immediate updates on election progress and results.
 
 **Consequences**:
+
 - Provides real-time updates across platforms
 - Reduces polling and server load
 - Requires maintaining socket connections

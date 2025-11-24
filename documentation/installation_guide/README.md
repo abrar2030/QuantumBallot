@@ -131,7 +131,7 @@ Edit the file at `src/api/axios.js` to point to your backend server:
 
 ```javascript
 // Update the BASE_URL to match your backend server address
-const BASE_URL = 'http://YOUR_LOCAL_IP:3010/api';
+const BASE_URL = "http://YOUR_LOCAL_IP:3010/api";
 ```
 
 > Note: When testing on a physical device, use your computer's local network IP address instead of localhost.
@@ -146,6 +146,7 @@ yarn start
 ```
 
 This will open the Expo developer tools in your browser. You can run the app on:
+
 - iOS Simulator
 - Android Emulator
 - Physical device using the Expo Go app (scan the QR code)

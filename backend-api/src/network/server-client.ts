@@ -50,13 +50,11 @@ app.post("/update_nodes", function (req, res) {
   requestConnection(getAllNodes(), getAllNodes());
 
   setTimeout(() => {
-    res
-      .status(200)
-      .json({
-        node: "New node added successfully!",
-        currentUrl: NODE_ADDRESS,
-        myUrls: getAllNodes(),
-      });
+    res.status(200).json({
+      node: "New node added successfully!",
+      currentUrl: NODE_ADDRESS,
+      myUrls: getAllNodes(),
+    });
   }, 50);
 });
 
@@ -71,13 +69,11 @@ app.post("/connect_node", function (req, res) {
   });
 
   setTimeout(() => {
-    res
-      .status(201)
-      .json({
-        node: "New node added successfully!",
-        currentUrl: NODE_ADDRESS,
-        myUrls: getAllNodes(),
-      });
+    res.status(201).json({
+      node: "New node added successfully!",
+      currentUrl: NODE_ADDRESS,
+      myUrls: getAllNodes(),
+    });
   }, 100);
 });
 

@@ -13,12 +13,14 @@ The project consists of three main components:
 ## Key Features
 
 ### Election Management
+
 - Create and configure elections with customizable parameters
 - Set election start/end dates and eligible voter lists
 - Add and manage candidates
 - Monitor election progress in real-time
 
 ### Voter Experience
+
 - Secure voter registration and authentication
 - View detailed candidate information
 - Cast votes securely through the mobile application
@@ -26,6 +28,7 @@ The project consists of three main components:
 - View election results when published
 
 ### Blockchain Integration
+
 - Immutable record of all votes
 - Transparent verification process
 - Prevention of double-voting
@@ -33,6 +36,7 @@ The project consists of three main components:
 - Decentralized validation
 
 ### Security Features
+
 - Two-factor authentication
 - Encryption of sensitive data
 - QR code verification
@@ -40,6 +44,7 @@ The project consists of three main components:
 - Secure key management
 
 ### Analytics and Reporting
+
 - Real-time election statistics
 - Voter turnout analysis
 - Geographic voting patterns
@@ -49,6 +54,7 @@ The project consists of three main components:
 ## Technology Stack
 
 ### Backend
+
 - **Runtime**: Node.js
 - **Language**: TypeScript
 - **Framework**: Express
@@ -58,6 +64,7 @@ The project consists of three main components:
 - **Other Libraries**: crypto-js, nodemailer, qrcode, speakeasy
 
 ### Web Frontend
+
 - **Framework**: React
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS, SCSS
@@ -68,6 +75,7 @@ The project consists of three main components:
 - **Testing**: Vitest, Testing Library
 
 ### Mobile Frontend
+
 - **Framework**: React Native (Expo)
 - **Language**: TypeScript
 - **Navigation**: React Navigation
@@ -77,6 +85,7 @@ The project consists of three main components:
 - **Other**: React Native SVG, Vector Icons
 
 ### Blockchain
+
 - Custom implementation with:
   - Proof of Work consensus
   - Cryptographic hashing

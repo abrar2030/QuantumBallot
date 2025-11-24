@@ -22,6 +22,7 @@ All scripts can be accessed through the main script:
 ### Available Commands
 
 - **setup** - Set up development environment
+
   ```bash
   ./main.sh setup --component all
   ./main.sh setup --component backend
@@ -30,6 +31,7 @@ All scripts can be accessed through the main script:
   ```
 
 - **dev** - Development workflow commands
+
   ```bash
   ./main.sh dev start backend
   ./main.sh dev test all
@@ -38,6 +40,7 @@ All scripts can be accessed through the main script:
   ```
 
 - **deploy** - Deployment commands
+
   ```bash
   ./main.sh deploy dev backend
   ./main.sh deploy staging web
@@ -45,6 +48,7 @@ All scripts can be accessed through the main script:
   ```
 
 - **docs** - Documentation generation commands
+
   ```bash
   ./main.sh docs api
   ./main.sh docs user
@@ -80,6 +84,7 @@ All scripts can be accessed through the main script:
 ### setup_environment.sh
 
 Automates the setup of the development environment for all components:
+
 - Installs system dependencies
 - Sets up Node.js and npm
 - Installs Expo CLI for mobile development
@@ -89,6 +94,7 @@ Automates the setup of the development environment for all components:
 ### dev_workflow.sh
 
 Manages common development workflow tasks:
+
 - Starting development servers
 - Running tests
 - Linting code
@@ -97,6 +103,7 @@ Manages common development workflow tasks:
 ### deployment.sh
 
 Handles deployment to different environments:
+
 - Development
 - Staging
 - Production
@@ -105,6 +112,7 @@ Handles deployment to different environments:
 ### documentation_generator.sh
 
 Generates project documentation:
+
 - API documentation
 - User guides
 - Developer documentation
@@ -112,6 +120,7 @@ Generates project documentation:
 ### ci_cd_helper.sh
 
 Assists with CI/CD workflows:
+
 - Validates workflow files
 - Runs CI checks locally
 - Checks GitHub Actions workflow status
