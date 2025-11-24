@@ -3,10 +3,10 @@ import { Editor } from "@monaco-editor/react";
 // import { CODE_SNIPPETS } from "./constants";
 
 type JsonProp = {
-  data: unknown
-}
+  data: unknown;
+};
 
-const JsonEditor = ({data}: JsonProp) => {
+const JsonEditor = ({ data }: JsonProp) => {
   const editorRef = useRef(null);
   const language = "json";
 
@@ -16,7 +16,14 @@ const JsonEditor = ({data}: JsonProp) => {
   };
 
   return (
-    <div style={{ borderTopLeftRadius: '10px', borderBottomLeftRadius: '10px', backgroundColor: 'white', overflow: 'hidden' }}>
+    <div
+      style={{
+        borderTopLeftRadius: "10px",
+        borderBottomLeftRadius: "10px",
+        backgroundColor: "white",
+        overflow: "hidden",
+      }}
+    >
       <style>
         {`
           .scrollbar::-webkit-scrollbar {

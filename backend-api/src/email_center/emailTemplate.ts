@@ -1,11 +1,10 @@
 import { Otp } from "../committee/data_types";
-const qrcode = require('qrcode');
-
+const qrcode = require("qrcode");
 
 const emailTemplate = (otp: Otp, voterName: string, textQRCode: string) => {
-    // console.log("QR CODE: ", textQRCode);
+  // console.log("QR CODE: ", textQRCode);
 
-    const html = `
+  const html = `
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -87,7 +86,7 @@ const emailTemplate = (otp: Otp, voterName: string, textQRCode: string) => {
 
     `;
 
-    return html;
-}
+  return html;
+};
 
 export default emailTemplate;

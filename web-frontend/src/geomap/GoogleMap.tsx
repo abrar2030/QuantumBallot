@@ -1,13 +1,13 @@
+"use client";
 
-"use client"
-
-import AmericaMap from "./components/AmericaMap/AmericaMap"
+import AmericaMap from "./components/AmericaMap/AmericaMap";
 
 function GoogleMap() {
-    return (<div className="AmericaMap">
-        <AmericaMap/>
+  return (
+    <div className="AmericaMap">
+      <AmericaMap />
     </div>
-    );
+  );
 }
 
-export default GoogleMap
+export default GoogleMap;

@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+import { vi } from "vitest";
 
 // Mock global objects that might not be available in the test environment
 global.ResizeObserver = vi.fn(() => ({
@@ -8,9 +8,9 @@ global.ResizeObserver = vi.fn(() => ({
 }));
 
 // Mock browser APIs
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
-  value: vi.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -23,4 +23,4 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 // Import Testing Library extensions
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom";

@@ -4,21 +4,21 @@ import path from "path";
 import OpenAI from "openai";
 //import 'dotenv/config';
 export default async function textToSpeech(str) {
-    const body = {
-        organization: process.env.ORGANIZATION,
-        project: process.env.PROJECT_ID,
-    };
-    console.log(process);
-    const speechFile = path.resolve("src/sounds/speech.mp3");
-    const openai = new OpenAI(body);
-    const mp3 = await openai.audio.speech.create({
-        model: "tts-1",
-        voice: "alloy",
-        input: str,
-    });
-    console.log(speechFile);
-    const buffer = Buffer.from(await mp3.arrayBuffer());
-    await fs.promises.writeFile(speechFile, buffer);
+  const body = {
+    organization: process.env.ORGANIZATION,
+    project: process.env.PROJECT_ID,
+  };
+  console.log(process);
+  const speechFile = path.resolve("src/sounds/speech.mp3");
+  const openai = new OpenAI(body);
+  const mp3 = await openai.audio.speech.create({
+    model: "tts-1",
+    voice: "alloy",
+    input: str,
+  });
+  console.log(speechFile);
+  const buffer = Buffer.from(await mp3.arrayBuffer());
+  await fs.promises.writeFile(speechFile, buffer);
 }
 const str = `
 Ladies and gentlemen,

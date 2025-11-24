@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import WaveSurfer from 'wavesurfer.js';
+import React, { useState, useRef, useEffect } from "react";
+import WaveSurfer from "wavesurfer.js";
 
 interface WaveformProps {
   url: string;
@@ -14,11 +14,11 @@ const Waveform: React.FC<WaveformProps> = ({ url }) => {
     if (waveformRef.current) {
       const waveSurfer = WaveSurfer.create({
         container: waveformRef.current,
-        waveColor: 'violet',
-        progressColor: 'purple',
+        waveColor: "violet",
+        progressColor: "purple",
         height: 100,
         cursorWidth: 1,
-        cursorColor: 'lightgray',
+        cursorColor: "lightgray",
         barWidth: 2,
         barGap: 1,
         responsive: true,
@@ -26,15 +26,15 @@ const Waveform: React.FC<WaveformProps> = ({ url }) => {
 
       waveSurfer.load(url);
 
-      waveSurfer.on('ready', () => {
+      waveSurfer.on("ready", () => {
         waveSurferRef.current = waveSurfer;
       });
 
-      waveSurfer.on('play', () => {
+      waveSurfer.on("play", () => {
         setIsPlaying(true);
       });
 
-      waveSurfer.on('pause', () => {
+      waveSurfer.on("pause", () => {
         setIsPlaying(false);
       });
 
@@ -53,9 +53,7 @@ const Waveform: React.FC<WaveformProps> = ({ url }) => {
   return (
     <div>
       <div ref={waveformRef} />
-      <button onClick={handlePlayPause}>
-        {isPlaying ? 'Pause' : 'Play'}
-      </button>
+      <button onClick={handlePlayPause}>{isPlaying ? "Pause" : "Play"}</button>
     </div>
   );
 };

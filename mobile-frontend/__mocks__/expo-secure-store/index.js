@@ -18,8 +18,8 @@ export default {
 
   // Helper method to reset the store between tests
   __resetStore: () => {
-    Object.keys(secureStore).forEach(key => {
+    Object.keys(secureStore).forEach((key) => {
       delete secureStore[key];
     });
-  }
+  },
 };

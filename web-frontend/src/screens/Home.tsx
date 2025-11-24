@@ -1,8 +1,15 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import React from "react";
+import { useRouter } from "next/router";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import Image from 'next/image';
+import Image from "next/image";
 
 const Home = () => {
   const router = useRouter();
@@ -12,7 +19,8 @@ const Home = () => {
       <div className="flex flex-col items-center text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">Blockchain Voting System</h1>
         <p className="text-xl text-gray-600 max-w-2xl">
-          A secure, transparent, and efficient way to conduct elections using blockchain technology
+          A secure, transparent, and efficient way to conduct elections using
+          blockchain technology
         </p>
       </div>
 
@@ -28,13 +36,14 @@ const Home = () => {
                 src="/images/bitcoin.svg"
                 alt="Secure Voting"
                 fill
-                style={{ objectFit: 'contain' }}
+                style={{ objectFit: "contain" }}
               />
             </div>
           </CardContent>
           <CardFooter>
             <p className="text-sm text-gray-500">
-              Our blockchain technology ensures your vote is secure, immutable, and verifiable.
+              Our blockchain technology ensures your vote is secure, immutable,
+              and verifiable.
             </p>
           </CardFooter>
         </Card>
@@ -50,13 +59,14 @@ const Home = () => {
                 src="/images/nakamoto.svg"
                 alt="Transparent Process"
                 fill
-                style={{ objectFit: 'contain' }}
+                style={{ objectFit: "contain" }}
               />
             </div>
           </CardContent>
           <CardFooter>
             <p className="text-sm text-gray-500">
-              Every step of the election is recorded on the blockchain, ensuring complete transparency.
+              Every step of the election is recorded on the blockchain, ensuring
+              complete transparency.
             </p>
           </CardFooter>
         </Card>
@@ -72,13 +82,14 @@ const Home = () => {
                 src="/images/crypto_portfolio.svg"
                 alt="Real-time Results"
                 fill
-                style={{ objectFit: 'contain' }}
+                style={{ objectFit: "contain" }}
               />
             </div>
           </CardContent>
           <CardFooter>
             <p className="text-sm text-gray-500">
-              Results are calculated in real-time as votes are cast and verified on the blockchain.
+              Results are calculated in real-time as votes are cast and verified
+              on the blockchain.
             </p>
           </CardFooter>
         </Card>
@@ -96,17 +107,18 @@ const Home = () => {
                 src="/images/ethereum.svg"
                 alt="Current Election"
                 fill
-                style={{ objectFit: 'contain' }}
+                style={{ objectFit: "contain" }}
               />
             </div>
           </CardContent>
           <CardFooter className="flex justify-between">
-            <Button variant="outline" onClick={() => router.push('/candidates')}>
+            <Button
+              variant="outline"
+              onClick={() => router.push("/candidates")}
+            >
               View Candidates
             </Button>
-            <Button onClick={() => router.push('/vote')}>
-              Cast Your Vote
-            </Button>
+            <Button onClick={() => router.push("/vote")}>Cast Your Vote</Button>
           </CardFooter>
         </Card>
 
@@ -121,12 +133,12 @@ const Home = () => {
                 src="/images/digital_currency.svg"
                 alt="Election Results"
                 fill
-                style={{ objectFit: 'contain' }}
+                style={{ objectFit: "contain" }}
               />
             </div>
           </CardContent>
           <CardFooter className="flex justify-end">
-            <Button onClick={() => router.push('/results')}>
+            <Button onClick={() => router.push("/results")}>
               View Results
             </Button>
           </CardFooter>

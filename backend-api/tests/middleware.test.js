@@ -1,49 +1,49 @@
 /**
  * Middleware tests for authentication and security
  */
-const { verifyJWT } = require('../build/middleware/verifyJWT');
-const { verifyJWTWeb } = require('../build/middleware/verifyJWTWeb');
-const { credentials } = require('../build/middleware/credentials');
-const jwt = require('jsonwebtoken');
+const { verifyJWT } = require("../build/middleware/verifyJWT");
+const { verifyJWTWeb } = require("../build/middleware/verifyJWTWeb");
+const { credentials } = require("../build/middleware/credentials");
+const jwt = require("jsonwebtoken");
 
 // Mock dependencies
-jest.mock('jsonwebtoken', () => ({
-  verify: jest.fn()
+jest.mock("jsonwebtoken", () => ({
+  verify: jest.fn(),
 }));
 
-describe('Middleware', () => {
+describe("Middleware", () => {
   let req, res, next;
 
   beforeEach(() => {
     req = {
       headers: {},
-      cookies: {}
+      cookies: {},
     };
     res = {
       sendStatus: jest.fn(),
       status: jest.fn().mockReturnThis(),
-      json: jest.fn()
+      json: jest.fn(),
     };
     next = jest.fn();
     jest.clearAllMocks();
   });
 
-  describe('verifyJWT', () => {
-    test('should call next() when valid token is provided', () => {
-      req.headers.authorization = 'Bearer valid-token';
+  describe("verifyJWT", () => {
+    test("should call next() when valid token is provided", () => {
+      req.headers.authorization = "Bearer valid-token";
       jwt.verify.mockImplementation((token, secret, callback) => {
-        callback(null, { electoralId: 'test-id' });
+        callback(null, { electoralId: "test-id" });
       });
 
       verifyJWT(req, res, next);
 
       expect(jwt.verify).toHaveBeenCalled();
-      expect(req.user).toEqual({ electoralId: 'test-id' });
+      expect(req.user).toEqual({ electoralId: "test-id" });
       expect(next).toHaveBeenCalled();
       expect(res.sendStatus).not.toHaveBeenCalled();
     });
 
-    test('should return 401 when no token is provided', () => {
+    test("should return 401 when no token is provided", () => {
       verifyJWT(req, res, next);
 
       expect(jwt.verify).not.toHaveBeenCalled();
@@ -51,10 +51,10 @@ describe('Middleware', () => {
       expect(next).not.toHaveBeenCalled();
     });
 
-    test('should return 403 when invalid token is provided', () => {
-      req.headers.authorization = 'Bearer invalid-token';
+    test("should return 403 when invalid token is provided", () => {
+      req.headers.authorization = "Bearer invalid-token";
       jwt.verify.mockImplementation((token, secret, callback) => {
-        callback(new Error('Invalid token'), null);
+        callback(new Error("Invalid token"), null);
       });
 
       verifyJWT(req, res, next);
@@ -64,36 +64,36 @@ describe('Middleware', () => {
       expect(next).not.toHaveBeenCalled();
     });
 
-    test('should handle token without Bearer prefix', () => {
-      req.headers.authorization = 'valid-token';
+    test("should handle token without Bearer prefix", () => {
+      req.headers.authorization = "valid-token";
       jwt.verify.mockImplementation((token, secret, callback) => {
-        callback(null, { electoralId: 'test-id' });
+        callback(null, { electoralId: "test-id" });
       });
 
       verifyJWT(req, res, next);
 
       expect(jwt.verify).toHaveBeenCalled();
-      expect(req.user).toEqual({ electoralId: 'test-id' });
+      expect(req.user).toEqual({ electoralId: "test-id" });
       expect(next).toHaveBeenCalled();
     });
   });
 
-  describe('verifyJWTWeb', () => {
-    test('should call next() when valid token is provided', () => {
-      req.headers.authorization = 'Bearer valid-token';
+  describe("verifyJWTWeb", () => {
+    test("should call next() when valid token is provided", () => {
+      req.headers.authorization = "Bearer valid-token";
       jwt.verify.mockImplementation((token, secret, callback) => {
-        callback(null, { username: 'test-user' });
+        callback(null, { username: "test-user" });
       });
 
       verifyJWTWeb(req, res, next);
 
       expect(jwt.verify).toHaveBeenCalled();
-      expect(req.user).toEqual({ username: 'test-user' });
+      expect(req.user).toEqual({ username: "test-user" });
       expect(next).toHaveBeenCalled();
       expect(res.sendStatus).not.toHaveBeenCalled();
     });
 
-    test('should return 401 when no token is provided', () => {
+    test("should return 401 when no token is provided", () => {
       verifyJWTWeb(req, res, next);
 
       expect(jwt.verify).not.toHaveBeenCalled();
@@ -101,10 +101,10 @@ describe('Middleware', () => {
       expect(next).not.toHaveBeenCalled();
     });
 
-    test('should return 403 when invalid token is provided', () => {
-      req.headers.authorization = 'Bearer invalid-token';
+    test("should return 403 when invalid token is provided", () => {
+      req.headers.authorization = "Bearer invalid-token";
       jwt.verify.mockImplementation((token, secret, callback) => {
-        callback(new Error('Invalid token'), null);
+        callback(new Error("Invalid token"), null);
       });
 
       verifyJWTWeb(req, res, next);
@@ -115,9 +115,9 @@ describe('Middleware', () => {
     });
   });
 
-  describe('credentials', () => {
-    test('should set appropriate headers for allowed origins', () => {
-      req.headers.origin = 'http://localhost:3000';
+  describe("credentials", () => {
+    test("should set appropriate headers for allowed origins", () => {
+      req.headers.origin = "http://localhost:3000";
 
       credentials(req, res, next);
 
@@ -125,7 +125,7 @@ describe('Middleware', () => {
       expect(next).toHaveBeenCalled();
     });
 
-    test('should handle requests without origin header', () => {
+    test("should handle requests without origin header", () => {
       credentials(req, res, next);
 
       expect(next).toHaveBeenCalled();

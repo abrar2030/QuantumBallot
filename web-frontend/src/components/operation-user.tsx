@@ -1,9 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { uploadImage } from '@/services/firebase';
-import { User } from '@/data_types';
-import { useAuth } from '@/context/AuthContext';
-import { useToast } from '@/components/ui/use-toast';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import React, { useState, useEffect } from "react";
+import { uploadImage } from "@/services/firebase";
+import { User } from "@/data_types";
+import { useAuth } from "@/context/AuthContext";
+import { useToast } from "@/components/ui/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,16 +29,22 @@ interface UserModalProps {
   toast: (...params: unknown[]) => void;
 }
 
-export const UserModal = ({ isOpen, onOpenChange, defaultValues, mode, toast }: UserModalProps) => {
-  const [name, setName] = useState(defaultValues.name || '');
-  const [username, setUsername] = useState(defaultValues.username || '');
-  const [password, setPassword] = useState(defaultValues.password || '');
+export const UserModal = ({
+  isOpen,
+  onOpenChange,
+  defaultValues,
+  mode,
+  toast,
+}: UserModalProps) => {
+  const [name, setName] = useState(defaultValues.name || "");
+  const [username, setUsername] = useState(defaultValues.username || "");
+  const [password, setPassword] = useState(defaultValues.password || "");
 
   useEffect(() => {
     if (isOpen) {
-      setName(defaultValues.name || '');
-      setUsername(defaultValues.username || '');
-      setPassword(defaultValues.password || '');
+      setName(defaultValues.name || "");
+      setUsername(defaultValues.username || "");
+      setPassword(defaultValues.password || "");
     }
   }, [isOpen, defaultValues]);
 
@@ -58,7 +70,9 @@ export const UserModal = ({ isOpen, onOpenChange, defaultValues, mode, toast }: 
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">Name</Label>
+            <Label htmlFor="name" className="text-right">
+              Name
+            </Label>
             <Input
               id="name"
               value={name}
@@ -67,7 +81,9 @@ export const UserModal = ({ isOpen, onOpenChange, defaultValues, mode, toast }: 
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">Username</Label>
+            <Label htmlFor="username" className="text-right">
+              Username
+            </Label>
             <Input
               id="username"
               value={username}
@@ -76,7 +92,9 @@ export const UserModal = ({ isOpen, onOpenChange, defaultValues, mode, toast }: 
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="password" className="text-right">Password</Label>
+            <Label htmlFor="password" className="text-right">
+              Password
+            </Label>
             <Input
               id="password"
               type="password"
@@ -87,7 +105,9 @@ export const UserModal = ({ isOpen, onOpenChange, defaultValues, mode, toast }: 
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={handleSubmit}>Save changes</Button>
+          <Button type="submit" onClick={handleSubmit}>
+            Save changes
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -105,7 +125,7 @@ const UserOperations = () => {
     }
   };
 
-  const handleUpload = async (data: {photoFile?: File}) => {
+  const handleUpload = async (data: { photoFile?: File }) => {
     if (!data.photoFile) {
       toast({
         title: "Error",
@@ -116,7 +136,7 @@ const UserOperations = () => {
     }
 
     try {
-      const userPhotoName = `users/${currentUser?.id || 'unknown'}/profile.jpg`;
+      const userPhotoName = `users/${currentUser?.id || "unknown"}/profile.jpg`;
       const downloadURL = await uploadImage(data.photoFile, userPhotoName);
 
       // Use mock function instead of missing context function
@@ -140,7 +160,9 @@ const UserOperations = () => {
       <h2 className="text-xl font-bold mb-4">User Operations</h2>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">Upload Profile Photo</label>
+        <label className="block text-sm font-medium mb-1">
+          Upload Profile Photo
+        </label>
         <input
           type="file"
           accept="image/*"
@@ -155,7 +177,9 @@ const UserOperations = () => {
       </div>
 
       <button
-        onClick={() => selectedFile && handleUpload({ photoFile: selectedFile })}
+        onClick={() =>
+          selectedFile && handleUpload({ photoFile: selectedFile })
+        }
         disabled={!selectedFile}
         className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50"
       >

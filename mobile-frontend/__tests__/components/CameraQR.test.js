@@ -1,44 +1,46 @@
 /**
  * Tests for CameraQR component
  */
-import React from 'react';
-import { render, fireEvent, act } from '@testing-library/react-native';
-import CameraQR from 'src/components/CameraQR';
+import React from "react";
+import { render, fireEvent, act } from "@testing-library/react-native";
+import CameraQR from "src/components/CameraQR";
 
 // Mock expo-camera
-jest.mock('expo-camera', () => ({
+jest.mock("expo-camera", () => ({
   Camera: ({ children, ...props }) => (
     <div data-testid="mock-camera" {...props}>
       {children}
     </div>
   ),
-  requestCameraPermissionsAsync: jest.fn().mockResolvedValue({ status: 'granted' }),
+  requestCameraPermissionsAsync: jest
+    .fn()
+    .mockResolvedValue({ status: "granted" }),
   Constants: {
     Type: {
-      back: 'back',
+      back: "back",
     },
   },
 }));
 
 // Mock expo-barcode-scanner
-jest.mock('expo-barcode-scanner', () => ({
+jest.mock("expo-barcode-scanner", () => ({
   BarCodeScanner: {
     Constants: {
       Type: {
-        back: 'back',
+        back: "back",
       },
     },
   },
 }));
 
-describe('CameraQR Component', () => {
+describe("CameraQR Component", () => {
   const mockOnScanned = jest.fn();
 
   beforeEach(() => {
     mockOnScanned.mockClear();
   });
 
-  test('renders camera when permission is granted', async () => {
+  test("renders camera when permission is granted", async () => {
     let component;
 
     await act(async () => {
@@ -46,10 +48,10 @@ describe('CameraQR Component', () => {
     });
 
     const { getByTestId } = component;
-    expect(getByTestId('mock-camera')).toBeTruthy();
+    expect(getByTestId("mock-camera")).toBeTruthy();
   });
 
-  test('handles barcode scanning', async () => {
+  test("handles barcode scanning", async () => {
     let component;
 
     await act(async () => {
@@ -57,12 +59,12 @@ describe('CameraQR Component', () => {
     });
 
     const { getByTestId } = component;
-    const camera = getByTestId('mock-camera');
+    const camera = getByTestId("mock-camera");
 
     // Simulate barcode scan
     const scanData = {
-      type: 'QR',
-      data: 'test-qr-data'
+      type: "QR",
+      data: "test-qr-data",
     };
 
     act(() => {
@@ -73,9 +75,11 @@ describe('CameraQR Component', () => {
     expect(mockOnScanned).toHaveBeenCalledWith(scanData);
   });
 
-  test('displays permission denied message when camera permission is not granted', async () => {
+  test("displays permission denied message when camera permission is not granted", async () => {
     // Mock camera permission denied
-    require('expo-camera').requestCameraPermissionsAsync.mockResolvedValueOnce({ status: 'denied' });
+    require("expo-camera").requestCameraPermissionsAsync.mockResolvedValueOnce({
+      status: "denied",
+    });
 
     let component;
 
@@ -85,7 +89,7 @@ describe('CameraQR Component', () => {
 
     const { getByText, queryByTestId } = component;
 
-    expect(queryByTestId('mock-camera')).toBeNull();
-    expect(getByText('Camera permission not granted')).toBeTruthy();
+    expect(queryByTestId("mock-camera")).toBeNull();
+    expect(getByText("Camera permission not granted")).toBeTruthy();
   });
 });

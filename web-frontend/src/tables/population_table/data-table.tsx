@@ -1,5 +1,4 @@
-
-import * as React from "react"
+import * as React from "react";
 
 import {
   ColumnDef,
@@ -11,9 +10,9 @@ import {
   useReactTable,
   getFilteredRowModel,
   ColumnFiltersState,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 
-import { Input } from "@/components/ui/input"
+import { Input } from "@/components/ui/input";
 
 import {
   Table,
@@ -22,12 +21,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { DataTablePagination } from "@/components/ui/DataTablePagination"
+} from "@/components/ui/table";
+import { DataTablePagination } from "@/components/ui/DataTablePagination";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[],
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
 }
 
 export function DataTable<TData, TValue>({
@@ -35,7 +34,9 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  );
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 8,
@@ -72,13 +73,14 @@ export function DataTable<TData, TValue>({
 
         <Input
           placeholder="Filter Electoral number ..."
-          value={(table.getColumn("electoralId")?.getFilterValue() as string) ?? ""}
+          value={
+            (table.getColumn("electoralId")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
             table.getColumn("electoralId")?.setFilterValue(event.target.value)
           }
           className="max-w-md"
         />
-
 
         <Input
           placeholder="Filter Regions ..."
@@ -101,11 +103,11 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -119,14 +121,20 @@ export function DataTable<TData, TValue>({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>
@@ -138,5 +146,5 @@ export function DataTable<TData, TValue>({
         <DataTablePagination table={table} />
       </div>
     </div>
-  )
+  );
 }

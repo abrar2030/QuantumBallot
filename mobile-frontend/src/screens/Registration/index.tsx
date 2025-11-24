@@ -1,18 +1,25 @@
-import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
-import { useState } from 'react';
-import { TextInput } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import { useNavigation } from '@react-navigation/native';
-import { api } from '../../services/api';
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from "react-native";
+import { useState } from "react";
+import { TextInput } from "react-native";
+import { Picker } from "@react-native-picker/picker";
+import { useNavigation } from "@react-navigation/native";
+import { api } from "../../services/api";
 
 export default function Registration() {
   const navigation = useNavigation();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [address, setAddress] = useState('');
-  const [province, setProvince] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [address, setAddress] = useState("");
+  const [province, setProvince] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const provinces = [
@@ -33,23 +40,30 @@ export default function Registration() {
     "Moxico",
     "Namibe",
     "Uíge",
-    "Zaire"
+    "Zaire",
   ];
 
   const validateForm = () => {
-    if (!name || !email || !password || !confirmPassword || !address || !province) {
-      Alert.alert('Error', 'Please fill in all fields');
+    if (
+      !name ||
+      !email ||
+      !password ||
+      !confirmPassword ||
+      !address ||
+      !province
+    ) {
+      Alert.alert("Error", "Please fill in all fields");
       return false;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
+      Alert.alert("Error", "Passwords do not match");
       return false;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      Alert.alert('Error', 'Please enter a valid email address');
+      Alert.alert("Error", "Please enter a valid email address");
       return false;
     }
 
@@ -62,30 +76,40 @@ export default function Registration() {
     setIsLoading(true);
 
     try {
-      const response = await api.post('/auth/register', {
+      const response = await api.post("/auth/register", {
         name,
         email,
         password,
         address,
-        province
+        province,
       });
 
       if (response.status === 201) {
         Alert.alert(
-          'Success',
-          'Registration successful. Please check your email for verification.',
-          [{ text: 'OK', onPress: () => navigation.navigate('Login' as never) }]
+          "Success",
+          "Registration successful. Please check your email for verification.",
+          [
+            {
+              text: "OK",
+              onPress: () => navigation.navigate("Login" as never),
+            },
+          ],
         );
       }
     } catch (error) {
-      const message = error instanceof Error && 'response' in error &&
-        typeof error.response === 'object' && error.response !== null &&
-        'data' in error.response && typeof error.response.data === 'object' &&
-        error.response.data !== null && 'message' in error.response.data &&
-        typeof error.response.data.message === 'string'
-        ? error.response.data.message
-        : 'Registration failed. Please try again.';
-      Alert.alert('Error', message);
+      const message =
+        error instanceof Error &&
+        "response" in error &&
+        typeof error.response === "object" &&
+        error.response !== null &&
+        "data" in error.response &&
+        typeof error.response.data === "object" &&
+        error.response.data !== null &&
+        "message" in error.response.data &&
+        typeof error.response.data.message === "string"
+          ? error.response.data.message
+          : "Registration failed. Please try again.";
+      Alert.alert("Error", message);
     } finally {
       setIsLoading(false);
     }
@@ -162,13 +186,15 @@ export default function Registration() {
             disabled={isLoading}
           >
             <Text style={styles.buttonText}>
-              {isLoading ? 'Registering...' : 'Register'}
+              {isLoading ? "Registering..." : "Register"}
             </Text>
           </TouchableOpacity>
 
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>Already have an account?</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Login' as never)}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Login" as never)}
+            >
               <Text style={styles.loginLink}>Login</Text>
             </TouchableOpacity>
           </View>
@@ -184,29 +210,29 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#f5f5f5",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 20,
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
+    color: "#666",
     marginBottom: 30,
   },
   formContainer: {
-    width: '100%',
+    width: "100%",
     maxWidth: 400,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 20,
     borderRadius: 10,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -214,14 +240,14 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: '500',
-    color: '#555',
+    fontWeight: "500",
+    color: "#555",
     marginBottom: 5,
   },
   input: {
     height: 50,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 5,
     marginBottom: 15,
     paddingHorizontal: 15,
@@ -229,42 +255,42 @@ const styles = StyleSheet.create({
   },
   pickerContainer: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 5,
     marginBottom: 15,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   picker: {
     height: 50,
-    width: '100%',
+    width: "100%",
   },
   button: {
-    backgroundColor: '#2196F3',
+    backgroundColor: "#2196F3",
     height: 50,
     borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 10,
   },
   buttonDisabled: {
-    backgroundColor: '#a0d1f7',
+    backgroundColor: "#a0d1f7",
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   loginContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginTop: 20,
   },
   loginText: {
-    color: '#666',
+    color: "#666",
   },
   loginLink: {
-    color: '#2196F3',
-    fontWeight: 'bold',
+    color: "#2196F3",
+    fontWeight: "bold",
     marginLeft: 5,
   },
 });

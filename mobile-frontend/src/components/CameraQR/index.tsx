@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Button, TouchableOpacity, Platform, StatusBar } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Button,
+  TouchableOpacity,
+  Platform,
+  StatusBar,
+} from "react-native";
 import { CameraView, Camera } from "expo-camera";
 import { CaretLeft } from "phosphor-react-native";
 
-export default function CameraQR({ navigation, route}: any) {
+export default function CameraQR({ navigation, route }: any) {
   const { secret } = route.params;
 
   const [hasPermission, setHasPermission] = useState<any>(null);
@@ -27,7 +35,6 @@ export default function CameraQR({ navigation, route}: any) {
     } else {
       alert(`FAILED :(`);
     }
-
   };
 
   if (hasPermission === null) {
@@ -39,12 +46,10 @@ export default function CameraQR({ navigation, route}: any) {
 
   const onPressBack = () => {
     navigation.goBack();
-  }
+  };
 
   return (
     <View style={styles.container}>
-
-
       <CameraView
         onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
         barcodeScannerSettings={{
@@ -52,7 +57,7 @@ export default function CameraQR({ navigation, route}: any) {
         }}
         style={StyleSheet.absoluteFillObject}
       />
-            <View style={styles.topBar}>
+      <View style={styles.topBar}>
         <TouchableOpacity onPress={onPressBack}>
           <CaretLeft size={36} color="white" />
         </TouchableOpacity>
@@ -60,23 +65,23 @@ export default function CameraQR({ navigation, route}: any) {
       {scanned && (
         <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />
       )}
-
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#ffffff',
-    width: '100%',
-    height: '100%',
-    flexDirection: 'column',
-  }, topBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: 'transparent',
+    backgroundColor: "#ffffff",
+    width: "100%",
+    height: "100%",
+    flexDirection: "column",
+  },
+  topBar: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "transparent",
     marginRight: 10,
-    marginTop: Platform.OS === 'android' ? StatusBar.currentHeight : 40,
-    position: 'absolute'
+    marginTop: Platform.OS === "android" ? StatusBar.currentHeight : 40,
+    position: "absolute",
   },
 });

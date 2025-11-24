@@ -1,8 +1,15 @@
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-type ItemPropsNumber = { number: string, key: string, token: string, setToken: any, numCodes: any, setNumCodes: any, setIsRefresh: any };
+type ItemPropsNumber = {
+  number: string;
+  key: string;
+  token: string;
+  setToken: any;
+  numCodes: any;
+  setNumCodes: any;
+  setIsRefresh: any;
+};
 
 export function PinItem(prop: ItemPropsNumber) {
   const updatePIN = (len: number) => {
@@ -30,12 +37,13 @@ export function PinItem(prop: ItemPropsNumber) {
     updatePIN(len + 1);
   };
 
-  if (prop.number === 'del') {
+  if (prop.number === "del") {
     return (
       <TouchableOpacity style={styles.button} onPress={onPressDel}>
         <View style={styles.container}>
           <Text style={styles.textCode}>
-            <Icon name="backspace-outline" size={25} color='#191919' /></Text>
+            <Icon name="backspace-outline" size={25} color="#191919" />
+          </Text>
         </View>
       </TouchableOpacity>
     );
@@ -52,26 +60,27 @@ export function PinItem(prop: ItemPropsNumber) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
+    width: "100%",
+    alignItems: "center",
+    backgroundColor: "transparent",
     padding: 5,
   },
   textCode: {
-    color: '#191919',
+    color: "#191919",
     fontSize: 25,
-    textAlign: 'center', // Center the text horizontally
-    textAlignVertical: 'center',
-    fontWeight: '500'
-  }, button: {
-    backgroundColor: '#FFFFFF',
+    textAlign: "center", // Center the text horizontally
+    textAlignVertical: "center",
+    fontWeight: "500",
+  },
+  button: {
+    backgroundColor: "#FFFFFF",
     width: 40,
     borderRadius: 10,
     flex: 1,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
     padding: 15,
     margin: 3,
-  }
+  },
 });

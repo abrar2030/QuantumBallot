@@ -8,72 +8,57 @@ import { TwoFactor } from "@screens/TwoFactor";
 import { useEffect, useState } from "react";
 import { Button } from "react-native-paper";
 import { useAuth } from "src/context/AuthContext";
-import { TransitionPresets } from '@react-navigation/stack';
+import { TransitionPresets } from "@react-navigation/stack";
 import CameraQR from "@components/CameraQR";
-
 
 const { Navigator, Screen } = createStackNavigator();
 
 export function AppRoutes() {
-    const { authState, onLogOut, isLoggedIn } = useAuth();
-    const [activeScreen, setActiveScreen] = useState("Login");
+  const { authState, onLogOut, isLoggedIn } = useAuth();
+  const [activeScreen, setActiveScreen] = useState("Login");
 
-    useEffect(() => {
-        isLoggedIn!();
-        if (!authState?.authenticated) {
-            setActiveScreen("Login");
-        } else {
-            setActiveScreen("Menu");
-        }
-    }, []);
+  useEffect(() => {
+    isLoggedIn!();
+    if (!authState?.authenticated) {
+      setActiveScreen("Login");
+    } else {
+      setActiveScreen("Menu");
+    }
+  }, []);
 
-    return (
-        <Navigator initialRouteName={activeScreen} screenOptions={{
-            headerShown: false
-        }}>
-            <Screen
-                name="Login"
-                component={Login}
-            />
+  return (
+    <Navigator
+      initialRouteName={activeScreen}
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Screen name="Login" component={Login} />
 
-            <Screen
-                name="Menu"
-                component={BottomNavigation}
-                options={{
-                    headerLeft: () => <Button onPress={onLogOut}>Logout</Button>,
-                }}
-            />
+      <Screen
+        name="Menu"
+        component={BottomNavigation}
+        options={{
+          headerLeft: () => <Button onPress={onLogOut}>Logout</Button>,
+        }}
+      />
 
-            <Screen
-                name="Registration"
-                component={Registration} />
+      <Screen name="Registration" component={Registration} />
 
-            <Screen
-                name="Thank Vote"
-                component={ThankVote}
+      <Screen
+        name="Thank Vote"
+        component={ThankVote}
+        options={{
+          title: "Thank Vote",
+          ...TransitionPresets.ScaleFromCenterAndroid,
+        }}
+      />
 
-                options={{
-                    title: "Thank Vote",
-                    ...TransitionPresets.ScaleFromCenterAndroid,
-                }}
-            />
+      <Screen name="TwoFactor" component={TwoFactor} />
 
-            <Screen
-                name="TwoFactor"
-                component={TwoFactor}
-            />
+      <Screen name="Candidate Details" component={CandidateDetails} />
 
-            <Screen
-                name="Candidate Details"
-                component={CandidateDetails}
-            />
-
-
-            <Screen
-                name="CameraQR"
-                component={CameraQR}
-            />
-
-        </Navigator>
-    )
+      <Screen name="CameraQR" component={CameraQR} />
+    </Navigator>
+  );
 }

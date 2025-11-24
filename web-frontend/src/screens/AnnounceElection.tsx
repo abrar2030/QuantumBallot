@@ -1,8 +1,15 @@
-import { useState } from 'react';
-import { DateRange } from '@/data_types';
+import { useState } from "react";
+import { DateRange } from "@/data_types";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,7 +20,7 @@ const AnnounceElection = () => {
   const [description, setDescription] = useState<string>("");
   const [dateRange, setDateRange] = useState<DateRange>({
     from: undefined,
-    to: undefined
+    to: undefined,
   });
   const { toast } = useToast();
 
@@ -31,8 +38,8 @@ const AnnounceElection = () => {
     }
 
     // Format dates for submission
-    const startTimeVoting = dateRange.from ? dateRange.from.toISOString() : '';
-    const endTimeVoting = dateRange.to ? dateRange.to.toISOString() : '';
+    const startTimeVoting = dateRange.from ? dateRange.from.toISOString() : "";
+    const endTimeVoting = dateRange.to ? dateRange.to.toISOString() : "";
 
     // Create announcement object
     const announcement = {
@@ -40,7 +47,7 @@ const AnnounceElection = () => {
       description,
       startTimeVoting,
       endTimeVoting,
-      candidates: []
+      candidates: [],
     };
 
     // Submit announcement (mock implementation)

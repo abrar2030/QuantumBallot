@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { Howl } from 'howler';
+import { useState } from "react";
+import { Howl } from "howler";
 import { MdVoiceOverOff, MdRecordVoiceOver } from "react-icons/md";
-import msncElection2022 from '../../sounds/msnbc_election_2022.wav';
+import msncElection2022 from "../../sounds/msnbc_election_2022.wav";
 
 // Define sound outside of component function
 const sound = new Howl({
@@ -10,8 +10,8 @@ const sound = new Howl({
   loop: true,
   volume: 0.3,
   onend: function () {
-    console.log('Finished!');
-  }
+    console.log("Finished!");
+  },
 });
 
 function SoundButton({ type }: { type: string }) {
@@ -20,19 +20,20 @@ function SoundButton({ type }: { type: string }) {
   let icon;
   switch (type) {
     case "on":
-      icon = <MdVoiceOverOff color='#6B7280' />;
+      icon = <MdVoiceOverOff color="#6B7280" />;
       break;
     case "off":
-      icon = <MdRecordVoiceOver color='#6B7280' />;
+      icon = <MdRecordVoiceOver color="#6B7280" />;
       break;
     default:
       icon = null;
   }
 
   return (
-    <div className='flex items-center bg-gray-200 p-2 pl-3 pr-3 rounded-sm hover:bg-gray-300'>
-      <button onClick={() => {
-        if (type === "on") {
+    <div className="flex items-center bg-gray-200 p-2 pl-3 pr-3 rounded-sm hover:bg-gray-300">
+      <button
+        onClick={() => {
+          if (type === "on") {
             if (!isPlaying) {
               sound.play();
               setIsPlaying(true);
@@ -40,14 +41,13 @@ function SoundButton({ type }: { type: string }) {
               sound.pause();
               setIsPlaying(false);
             }
-        } else {
-          sound.pause();
-          setIsPlaying(false);
-        }
-      }}>
-        <div>
-          {icon}
-        </div>
+          } else {
+            sound.pause();
+            setIsPlaying(false);
+          }
+        }}
+      >
+        <div>{icon}</div>
       </button>
     </div>
   );

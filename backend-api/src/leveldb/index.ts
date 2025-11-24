@@ -4,8 +4,8 @@ import { Citizen, User } from "../committee/data_types";
 const NODE_ADDRESS = process.argv[2];
 const getBlockAddress = (str) => str + NODE_ADDRESS;
 
-const { Level } = require('level')
-const db = new Level(getBlockAddress('././db/db'), { valueEncoding: 'json' })
+const { Level } = require("level");
+const db = new Level(getBlockAddress("././db/db"), { valueEncoding: "json" });
 
 const BLOCK = getBlockAddress("block");
 const CHAIN = getBlockAddress("chain");
@@ -20,66 +20,72 @@ const ANNOUNCEMENT = getBlockAddress("announcement");
 const RESULTS = getBlockAddress("results");
 const VOTER_CITIZEN_RELATION = getBlockAddress("voter_citizen_relation");
 
-const blockdb = db.sublevel(BLOCK, { valueEncoding: 'json' })
-const chaindb = db.sublevel(CHAIN, { valueEncoding: 'json' })
-const transactiondb = db.sublevel(TRANSACTION, { valueEncoding: 'json' })
-const citizensdb = db.sublevel(CITIZENS, { valueEncoding: 'json' })
-const candidatesdb = db.sublevel(CANDIDATES, { valueEncoding: 'json' })
-const votersdb = db.sublevel(VOTERS, { valueEncoding: 'json' })
-const votersgenerateddb = db.sublevel(VOTERS_GENERATED, { valueEncoding: 'json' })
-const candidatesTempDb = db.sublevel(CANDIDATES_TEMP, { valueEncoding: 'json' })
-const userdb = db.sublevel(USER_COMMITTEE, { valueEncoding: 'json' })
-const announcementdb = db.sublevel(ANNOUNCEMENT, { valueEncoding: 'json' })
-const resultsdb = db.sublevel(RESULTS, { valueEncoding: 'json' })
-const votercitizenrelationdb = db.sublevel(VOTER_CITIZEN_RELATION, { valueEncoding: 'json' })
+const blockdb = db.sublevel(BLOCK, { valueEncoding: "json" });
+const chaindb = db.sublevel(CHAIN, { valueEncoding: "json" });
+const transactiondb = db.sublevel(TRANSACTION, { valueEncoding: "json" });
+const citizensdb = db.sublevel(CITIZENS, { valueEncoding: "json" });
+const candidatesdb = db.sublevel(CANDIDATES, { valueEncoding: "json" });
+const votersdb = db.sublevel(VOTERS, { valueEncoding: "json" });
+const votersgenerateddb = db.sublevel(VOTERS_GENERATED, {
+  valueEncoding: "json",
+});
+const candidatesTempDb = db.sublevel(CANDIDATES_TEMP, {
+  valueEncoding: "json",
+});
+const userdb = db.sublevel(USER_COMMITTEE, { valueEncoding: "json" });
+const announcementdb = db.sublevel(ANNOUNCEMENT, { valueEncoding: "json" });
+const resultsdb = db.sublevel(RESULTS, { valueEncoding: "json" });
+const votercitizenrelationdb = db.sublevel(VOTER_CITIZEN_RELATION, {
+  valueEncoding: "json",
+});
 
 /*
   INFO ABOUT THE API: https://github.com/Level/level?tab=readme-ov-file
 */
 
 export async function writeTransaction(key, value) {
-  await transactiondb.put(key, value)
+  await transactiondb.put(key, value);
 }
 
 export async function writeChain(value) {
-  await chaindb.put(CHAIN, value)
+  await chaindb.put(CHAIN, value);
 
   let chain: Block[] = value;
-  chain.forEach(x => {
+  chain.forEach((x) => {
     writeBlock(x.blockHeader.blockHash, x);
   });
 }
 
 export async function writeBlock(key, value) {
-  await blockdb.put(key, value)
+  await blockdb.put(key, value);
 }
 
 export async function writeCitizen(key, value) {
-  await citizensdb.put(key, value)
+  await citizensdb.put(key, value);
 }
 
 export async function writeUser(key, value) {
-  await userdb.put(key, value)
+  await userdb.put(key, value);
 }
 
 export async function writeAnnouncement(value) {
-  await announcementdb.put(ANNOUNCEMENT, value)
+  await announcementdb.put(ANNOUNCEMENT, value);
 }
 
 export async function writeResults(value) {
-  await resultsdb.put(RESULTS, value)
+  await resultsdb.put(RESULTS, value);
 }
 
 export async function writeVoterGenerated(key, value) {
-  await votersgenerateddb.put(key, value)
+  await votersgenerateddb.put(key, value);
 }
 
 export async function writeVoterCitizenRelation(key, value) {
-  await votercitizenrelationdb.put(key, value)
+  await votercitizenrelationdb.put(key, value);
 }
 
 export async function writeCandidateTemp(key, value) {
-  await candidatesTempDb.put(key, value)
+  await candidatesTempDb.put(key, value);
 }
 
 export async function updateVoter(key, value) {
@@ -89,17 +95,15 @@ export async function updateVoter(key, value) {
 export async function deployVotersGenerated() {
   await clearVoters();
   for await (const [key, value] of votersgenerateddb.iterator()) {
-    if (value !== undefined)
-      votersdb.put(key, value);
-      await writeVoterCitizenRelation(value.electoralId, value.identifier);
+    if (value !== undefined) votersdb.put(key, value);
+    await writeVoterCitizenRelation(value.electoralId, value.identifier);
   }
 }
 
 export async function deployCandidates() {
   clearCandidates();
   for await (const [key, value] of candidatesTempDb.iterator()) {
-    if (value !== undefined)
-      candidatesdb.put(key, value);
+    if (value !== undefined) candidatesdb.put(key, value);
   }
 }
 
@@ -112,7 +116,7 @@ export async function readVoters() {
     }
   }
 
-  return voters
+  return voters;
 }
 
 export async function readCandidatesTemp() {
@@ -124,9 +128,8 @@ export async function readCandidatesTemp() {
     }
   }
 
-  return candidates
+  return candidates;
 }
-
 
 export async function readCandidates() {
   let candidates: Candidate[] = [];
@@ -137,7 +140,7 @@ export async function readCandidates() {
     }
   }
 
-  return candidates
+  return candidates;
 }
 
 export async function readUsers() {
@@ -149,7 +152,7 @@ export async function readUsers() {
     }
   }
 
-  return users
+  return users;
 }
 
 export async function readVoterGenerated() {
@@ -159,21 +162,21 @@ export async function readVoterGenerated() {
     votersGenerated.push(value);
   }
 
-  return votersGenerated
+  return votersGenerated;
 }
 
 export async function readBlock(key) {
-  const value = await blockdb.get(key)
+  const value = await blockdb.get(key);
   return value;
 }
 
 export async function readChain() {
-  const value = await chaindb.get(CHAIN)
+  const value = await chaindb.get(CHAIN);
   return value;
 }
 
 export async function readVoterCitizenRelation(key) {
-  const value = await votercitizenrelationdb.get(key)
+  const value = await votercitizenrelationdb.get(key);
   return value;
 }
 
@@ -182,23 +185,23 @@ export async function clearVoterCitizenRelation() {
 }
 
 export async function readAnnouncement() {
-  const value = await announcementdb.get(ANNOUNCEMENT)
+  const value = await announcementdb.get(ANNOUNCEMENT);
   return value;
 }
 
 export async function readResults() {
-  const value = await resultsdb.get(RESULTS)
+  const value = await resultsdb.get(RESULTS);
   return value;
 }
 
 export async function readTransactions() {
-  let transactions = []
+  let transactions = [];
 
   for await (const [_, value] of transactiondb.iterator()) {
     transactions.push(value);
   }
 
-  return transactions
+  return transactions;
 }
 
 export async function readCitizen(key) {
@@ -221,11 +224,11 @@ export async function readCitizens() {
 }
 
 export async function removeUser(key) {
-  return userdb.del(key)
+  return userdb.del(key);
 }
 
 export async function removeCitizen(key) {
-  return citizensdb.del(key)
+  return citizensdb.del(key);
 }
 
 export async function clearCitizens() {
@@ -264,9 +267,9 @@ export async function clearVoters() {
 export async function readBlocks() {
   let blocks = [];
   let stream = blockdb.createReadStream();
-  stream.on('data', function (block) {
+  stream.on("data", function (block) {
     blocks.push(block);
-  })
+  });
 
   return blocks;
 }

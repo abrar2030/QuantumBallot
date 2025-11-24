@@ -1,7 +1,12 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User } from '@/data_types';
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut as firebaseSignOut } from 'firebase/auth';
-import { app } from '@/services/firebase-config';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { User } from "@/data_types";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut as firebaseSignOut,
+} from "firebase/auth";
+import { app } from "@/services/firebase-config";
 
 interface AuthContextType {
   currentUser: User | null;
@@ -19,7 +24,9 @@ const AuthContext = createContext<AuthContextType>({
 
 export const useAuth = () => useContext(AuthContext);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -29,10 +36,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (user) {
         setCurrentUser({
           id: user.uid,
-          name: user.displayName || '',
-          email: user.email || '',
-          photoURL: user.photoURL || '',
-          role: 'user', // Default role, would typically come from a database
+          name: user.displayName || "",
+          email: user.email || "",
+          photoURL: user.photoURL || "",
+          role: "user", // Default role, would typically come from a database
         });
       } else {
         setCurrentUser(null);

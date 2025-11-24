@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import * as ProgressPrimitive from "@radix-ui/react-progress"
+import * as React from "react";
+import * as ProgressPrimitive from "@radix-ui/react-progress";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 const ProgressBar = React.forwardRef<
   React.ElementRef<typeof ProgressPrimitive.Root>,
@@ -13,7 +13,7 @@ const ProgressBar = React.forwardRef<
     ref={ref}
     className={cn(
       "relative h-4 w-full overflow-hidden rounded-sm bg-red-200",
-      className
+      className,
     )}
     {...props}
   >
@@ -22,8 +22,8 @@ const ProgressBar = React.forwardRef<
       style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
     />
   </ProgressPrimitive.Root>
-))
+));
 
-ProgressBar.displayName = ProgressPrimitive.Root.displayName
+ProgressBar.displayName = ProgressPrimitive.Root.displayName;
 
-export { ProgressBar }
+export { ProgressBar };

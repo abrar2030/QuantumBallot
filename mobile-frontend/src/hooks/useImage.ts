@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
-const useImage = ({src}: any) => {
-    const [loaded, setLoaded] = useState(false);
+const useImage = ({ src }: any) => {
+  const [loaded, setLoaded] = useState(false);
 
-    useEffect(() => {
-        const img = new Image();
-        img.src = src;
-        img.onload = () => setLoaded(true);
-    }, [src]);
+  useEffect(() => {
+    const img = new Image();
+    img.src = src;
+    img.onload = () => setLoaded(true);
+  }, [src]);
 
-    return {
-        loaded
-    };
+  return {
+    loaded,
+  };
 };
 
 export default useImage;

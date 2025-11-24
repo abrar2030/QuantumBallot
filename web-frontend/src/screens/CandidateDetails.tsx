@@ -1,10 +1,17 @@
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { Candidate } from '@/data_types';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { Candidate } from "@/data_types";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import Image from 'next/image';
-import Waveform from '@/tables/election_results_table/Waveform';
+import Image from "next/image";
+import Waveform from "@/tables/election_results_table/Waveform";
 
 interface CandidateDetailsProps {
   candidate?: Candidate;
@@ -18,9 +25,9 @@ const CandidateDetails: React.FC<CandidateDetailsProps> = ({
     party: "Independent",
     image: "/images/nakamoto.svg",
     speech: "/audio/sample-speech.mp3",
-    votes: 0
+    votes: 0,
   },
-  isLoading = false
+  isLoading = false,
 }) => {
   const router = useRouter();
   const { id } = router.query;
@@ -50,16 +57,18 @@ const CandidateDetails: React.FC<CandidateDetailsProps> = ({
                     src={candidate.image}
                     alt={candidate.name || "Candidate"}
                     fill
-                    style={{ objectFit: 'contain' }}
+                    style={{ objectFit: "contain" }}
                   />
                 </div>
               )}
             </div>
             <div className="w-full md:w-2/3">
-              <h3 className="text-lg font-medium mb-2">Candidate Information</h3>
+              <h3 className="text-lg font-medium mb-2">
+                Candidate Information
+              </h3>
               <p className="text-gray-500 mb-4">
-                This candidate is running for office with the {candidate.party} party.
-                They have received {candidate.votes} votes so far.
+                This candidate is running for office with the {candidate.party}{" "}
+                party. They have received {candidate.votes} votes so far.
               </p>
 
               {candidate.speech && (

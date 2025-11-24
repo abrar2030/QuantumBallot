@@ -26,8 +26,12 @@ export const columns = [
       const voter = row.original;
       return (
         <div>
-          <button onClick={() => console.log("View voter", voter.id)}>View</button>
-          <button onClick={() => console.log("Verify voter", voter.id)}>Verify</button>
+          <button onClick={() => console.log("View voter", voter.id)}>
+            View
+          </button>
+          <button onClick={() => console.log("Verify voter", voter.id)}>
+            Verify
+          </button>
         </div>
       );
     },

@@ -1,1 +1,1 @@
-declare module 'react-native-flat-button';
+declare module "react-native-flat-button";

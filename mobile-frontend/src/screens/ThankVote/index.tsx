@@ -1,8 +1,8 @@
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import theme from 'src/theme';
-import { StatusBar } from 'react-native';
-import * as Clipboard from 'expo-clipboard';
-import { useEffect, useState } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import theme from "src/theme";
+import { StatusBar } from "react-native";
+import * as Clipboard from "expo-clipboard";
+import { useEffect, useState } from "react";
 
 export default function ThankVote() {
   const [copied, setCopied] = useState(false);
@@ -34,12 +34,14 @@ export default function ThankVote() {
         <View style={styles.transactionContainer}>
           <Text style={styles.transactionId}>{transactionId}</Text>
           <TouchableOpacity onPress={copyToClipboard} style={styles.copyButton}>
-            <Text style={styles.copyButtonText}>{copied ? "Copied!" : "Copy"}</Text>
+            <Text style={styles.copyButtonText}>
+              {copied ? "Copied!" : "Copy"}
+            </Text>
           </TouchableOpacity>
         </View>
         <Text style={styles.info}>
-          Your vote has been securely recorded on the blockchain. You can use this
-          transaction ID to verify your vote at any time.
+          Your vote has been securely recorded on the blockchain. You can use
+          this transaction ID to verify your vote at any time.
         </Text>
       </View>
 
@@ -54,12 +56,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,
-    alignItems: 'center',
+    alignItems: "center",
     padding: 20,
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: theme.colors.success,
     marginTop: 60,
     marginBottom: 10,
@@ -70,12 +72,12 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   card: {
-    width: '100%',
-    backgroundColor: '#fff',
+    width: "100%",
+    backgroundColor: "#fff",
     borderRadius: 10,
     padding: 20,
     marginBottom: 30,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -83,7 +85,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: theme.colors.text,
     marginBottom: 20,
   },
@@ -93,10 +95,10 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   transactionContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#f5f5f5',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#f5f5f5",
     borderRadius: 5,
     padding: 10,
     marginBottom: 20,
@@ -113,7 +115,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   copyButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 12,
   },
   info: {
@@ -123,15 +125,15 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: theme.colors.primary,
-    width: '100%',
+    width: "100%",
     height: 50,
     borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });

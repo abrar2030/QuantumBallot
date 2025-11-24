@@ -4,6 +4,8 @@ import { jsx as _jsx } from "react/jsx-runtime";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 function TableUsers({ data }) {
-    return (_jsx("section", { children: _jsx(DataTable, { columns: columns, data: data }) }));
+  return _jsx("section", {
+    children: _jsx(DataTable, { columns: columns, data: data }),
+  });
 }
 export default TableUsers;

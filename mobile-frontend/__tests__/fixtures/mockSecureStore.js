@@ -22,5 +22,5 @@ export const mockSecureStore = {
   // Helper method to reset the store between tests
   resetStore: () => {
     secureStore = {};
-  }
+  },
 };

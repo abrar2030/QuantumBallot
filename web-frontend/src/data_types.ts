@@ -1,7 +1,7 @@
 // Data types for the application
 export enum Role {
   ADMIN = "ADMIN",
-  USER = "USER"
+  USER = "USER",
 }
 
 export interface Candidate {

@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
 
 export function HeaderElection() {
   return (
@@ -17,42 +17,42 @@ export function HeaderElection() {
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
+    width: "100%",
     padding: 15,
-    backgroundColor: '#f8f8f8',
-    alignItems: 'center',
+    backgroundColor: "#f8f8f8",
+    alignItems: "center",
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: "#e0e0e0",
   },
   flagContainer: {
     width: 60,
     height: 40,
     marginBottom: 10,
-    flexDirection: 'row',
-    overflow: 'hidden',
+    flexDirection: "row",
+    overflow: "hidden",
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: "#e0e0e0",
   },
   flagStripe1: {
     flex: 1,
-    backgroundColor: '#0057B7',
+    backgroundColor: "#0057B7",
   },
   flagStripe2: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
   },
   flagStripe3: {
     flex: 1,
-    backgroundColor: '#D62612',
+    backgroundColor: "#D62612",
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   subtitle: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
 });

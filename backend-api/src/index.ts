@@ -1,8 +1,8 @@
-import express, { Request, Response } from 'express';
-import dotenv from 'dotenv';
-import { connectToDB } from './leveldb'; // Assuming a connectToDB function exists
+import express, { Request, Response } from "express";
+import dotenv from "dotenv";
+import { connectToDB } from "./leveldb"; // Assuming a connectToDB function exists
 
-dotenv.config({ path: '../.env' });
+dotenv.config({ path: "../.env" });
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,8 +11,8 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Basic route
-app.get('/', (req: Request, res: Response) => {
-  res.send('Chainocracy Backend API is running!');
+app.get("/", (req: Request, res: Response) => {
+  res.send("Chainocracy Backend API is running!");
 });
 
 // Assuming routes are imported and used here
@@ -29,7 +29,7 @@ const startServer = async () => {
       console.log(`Server is running on http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error('Failed to start server:', error);
+    console.error("Failed to start server:", error);
     process.exit(1);
   }
 };

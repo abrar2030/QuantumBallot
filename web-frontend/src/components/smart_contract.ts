@@ -1,412 +1,450 @@
-import { Voter, Candidate, Results, CandidateResult, HashMap } from '../blockchain/data_types';
-import CryptoBlockchain from '../crypto/cryptoBlockchain';
-import { clearResults, clearVoters, readAnnouncement, readCandidates, readCitizens, readResults, readVoters, writeResults } from '../leveldb';
-import { Announcement, Citizen } from '../committee/data_types';
+import {
+  Voter,
+  Candidate,
+  Results,
+  CandidateResult,
+  HashMap,
+} from "../blockchain/data_types";
+import CryptoBlockchain from "../crypto/cryptoBlockchain";
+import {
+  clearResults,
+  clearVoters,
+  readAnnouncement,
+  readCandidates,
+  readCitizens,
+  readResults,
+  readVoters,
+  writeResults,
+} from "../leveldb";
+import { Announcement, Citizen } from "../committee/data_types";
 
-const CryptoBlockIdentifier = new CryptoBlockchain(process.env.SECRET_KEY_IDENTIFIER, process.env.SECRET_IV_IDENTIFIER);
-const CryptoBlockVote = new CryptoBlockchain(process.env.SECRET_KEY_VOTES, process.env.SECRET_IV_VOTES);
+const CryptoBlockIdentifier = new CryptoBlockchain(
+  process.env.SECRET_KEY_IDENTIFIER,
+  process.env.SECRET_IV_IDENTIFIER,
+);
+const CryptoBlockVote = new CryptoBlockchain(
+  process.env.SECRET_KEY_VOTES,
+  process.env.SECRET_IV_VOTES,
+);
 
 enum ElectionState {
-    Created = 0,
-    Announced,
-    Started,
-    Happening,
-    Ended,
+  Created = 0,
+  Announced,
+  Started,
+  Happening,
+  Ended,
 }
 
 class SmartContract {
-    candidates: Candidate[];
-    candidatesTest: Candidate[];
+  candidates: Candidate[];
+  candidatesTest: Candidate[];
 
-    voters: Voter[];
-    votersTest: Voter[];
+  voters: Voter[];
+  votersTest: Voter[];
 
-    citizens: Citizen[];
+  citizens: Citizen[];
 
-    hashCandidates: HashMap<Candidate>;
-    hashVoters: HashMap<Voter>;
+  hashCandidates: HashMap<Candidate>;
+  hashVoters: HashMap<Voter>;
 
-    electionState: ElectionState;
-    announcement: Announcement;
+  electionState: ElectionState;
+  announcement: Announcement;
 
-    provinces: string[];
-    results: Results;
+  provinces: string[];
+  results: Results;
 
-    statsPerProvince: HashMap<HashMap<number>>;
+  statsPerProvince: HashMap<HashMap<number>>;
 
-    constructor() {
-        this.electionState = ElectionState.Created;
-        this.initVariables();
-        this.update();
+  constructor() {
+    this.electionState = ElectionState.Created;
+    this.initVariables();
+    this.update();
+  }
+
+  public update() {
+    this.initVariables();
+    this.electionState = ElectionState.Started;
+  }
+
+  private async initVariables() {
+    this.candidates = [];
+    this.voters = [];
+    this.citizens = [];
+
+    this.provinces = [
+      "Bengo",
+      "Benguela",
+      "Bié",
+      "Cabinda",
+      "Cuando Cubango",
+      "Cuanza Norte",
+      "Cuanza Sul",
+      "Cunene",
+      "Huambo",
+      "Huíla",
+      "Luanda",
+      "Lunda Norte",
+      "Lunda Sul",
+      "Malanje",
+      "Moxico",
+      "Namibe",
+      "Uíge",
+      "Zaire",
+    ];
+
+    this.hashCandidates = {};
+    this.hashVoters = {};
+
+    await this.loadCandidates();
+    await this.loadVoters();
+    await this.loadAnnouncement();
+    await this.loadCitizens();
+    await this.loadResults();
+
+    this.statsPerProvince = {};
+    this.provinces.forEach((p) => {
+      const map: HashMap<number> = {};
+
+      this.candidates.forEach((c) => {
+        map[c.party] = 0;
+      });
+
+      map["sum"] = 0;
+
+      this.statsPerProvince[p] = map;
+    });
+  }
+
+  private async loadCitizens() {
+    try {
+      this.citizens = await readCitizens();
+    } catch (_) {
+      // Handle silently
     }
 
-    public update() {
-        this.initVariables();
-        this.electionState = ElectionState.Started;
+    return this.announcement;
+  }
+
+  private async loadAnnouncement() {
+    try {
+      this.announcement = await readAnnouncement();
+    } catch (_) {
+      // Handle silently
     }
 
-    private async initVariables() {
-        this.candidates = [];
-        this.voters = [];
-        this.citizens = [];
+    return this.announcement;
+  }
 
-        this.provinces = [
-            "Bengo",
-            "Benguela",
-            "Bié",
-            "Cabinda",
-            "Cuando Cubango",
-            "Cuanza Norte",
-            "Cuanza Sul",
-            "Cunene",
-            "Huambo",
-            "Huíla",
-            "Luanda",
-            "Lunda Norte",
-            "Lunda Sul",
-            "Malanje",
-            "Moxico",
-            "Namibe",
-            "Uíge",
-            "Zaire"
-        ];
-
-
-        this.hashCandidates = {};
-        this.hashVoters = {};
-
-        await this.loadCandidates();
-        await this.loadVoters();
-        await this.loadAnnouncement();
-        await this.loadCitizens();
-        await this.loadResults();
-
-        this.statsPerProvince = {};
-        this.provinces.forEach(p => {
-            const map: HashMap<number> = {};
-
-            this.candidates.forEach(c => {
-                map[c.party] = 0;
-            })
-
-            map['sum'] = 0;
-
-            this.statsPerProvince[p] = map;
-        })
+  private async loadResults() {
+    try {
+      this.results = await readResults();
+    } catch (_) {
+      // Handle silently
     }
 
-    private async loadCitizens() {
-        try {
-            this.citizens = await readCitizens();
-        } catch (_) {
-            // Handle silently
-        }
+    return this.results;
+  }
 
-        return this.announcement;
+  private async loadVoters(): Promise<Voter[]> {
+    try {
+      this.voters = await readVoters();
+    } catch (_) {
+      // Handle silently
     }
 
-    private async loadAnnouncement() {
-        try {
-            this.announcement = await readAnnouncement();
-        } catch (_) {
-            // Handle silently
-        }
+    return this.voters;
+  }
 
-        return this.announcement;
+  private async loadCandidates(): Promise<Candidate[]> {
+    try {
+      this.candidates = await readCandidates();
+    } catch (_) {
+      // Handle silently
     }
 
-    private async loadResults() {
-        try {
-            this.results = await readResults();
-        } catch (_) {
-            // Handle silently
-        }
+    return this.candidates;
+  }
 
-        return this.results;
+  public async getAnnouncement() {
+    try {
+      this.announcement = await readAnnouncement();
+    } catch (_) {
+      // Handle silently
     }
 
-    private async loadVoters(): Promise<Voter[]> {
-        try {
-            this.voters = await readVoters();
-        } catch (_) {
-            // Handle silently
-        }
+    return this.announcement;
+  }
 
-        return this.voters;
+  public isValidElectionTime(): boolean {
+    const currentTime: number = Date.now();
+    return (
+      this.isElectionState() &&
+      currentTime >= new Date(this.announcement.startTimeVoting).getTime() &&
+      currentTime <= new Date(this.announcement.endTimeVoting).getTime()
+    );
+  }
+
+  private isElectionState(): boolean {
+    return (
+      this.electionState >= ElectionState.Started &&
+      this.electionState <= ElectionState.Ended
+    );
+  }
+
+  public async getVoters() {
+    try {
+      this.votersTest = await readVoters();
+    } catch (_) {
+      // Handle silently
     }
 
-    private async loadCandidates(): Promise<Candidate[]> {
-        try {
-            this.candidates = await readCandidates();
-        } catch (_) {
-            // Handle silently
-        }
+    return this.votersTest;
+  }
 
-        return this.candidates;
+  public async getCandidates() {
+    try {
+      this.candidatesTest = await readCandidates();
+    } catch (_) {
+      // Handle silently
     }
 
-    public async getAnnouncement() {
-        try {
-            this.announcement = await readAnnouncement();
-        } catch (_) {
-            // Handle silently
-        }
+    return this.candidatesTest;
+  }
 
-        return this.announcement;
+  public async eraseVoters() {
+    try {
+      await clearVoters();
+      await this.loadVoters();
+    } catch (_) {
+      // Handle silently
+    }
+  }
+
+  public async eraseResults() {
+    try {
+      await clearResults();
+      this.results = null;
+      await this.loadResults();
+    } catch (_) {
+      // Handle silently
+    }
+  }
+
+  public revealVoter(voter: Voter) {
+    const objData = {
+      IV: voter.electoralIV,
+      CIPHER_TEXT: voter.electoralId,
+    };
+
+    const ans = {
+      electoralId: CryptoBlockIdentifier.decryptData(objData),
+      identifier: voter.identifier,
+    };
+
+    return ans;
+  }
+
+  private announceElection() {
+    this.electionState = ElectionState.Announced;
+  }
+
+  private startElection() {
+    this.electionState = ElectionState.Started;
+  }
+
+  private endElection() {
+    this.electionState = ElectionState.Ended;
+  }
+
+  private async existsVoter(voter: Voter): Promise<boolean> {
+    const res = voter.identifier in this.hashVoters;
+    return res;
+  }
+
+  private existsCandidate(code: string): boolean {
+    return code in this.hashCandidates;
+  }
+
+  private async processVotes(): Promise<void> {
+    for (const candidate of this.candidates) {
+      this.hashCandidates[candidate.code] = candidate;
     }
 
-    public isValidElectionTime(): boolean {
-        const currentTime: number = Date.now();
-        return this.isElectionState() && currentTime >= new Date(this.announcement.startTimeVoting).getTime() && currentTime <= new Date(this.announcement.endTimeVoting).getTime();
+    const votesProcessed: HashMap<boolean> = {};
+
+    this.electionState = ElectionState.Ended;
+
+    for (const voter of this.voters) {
+      this.hashVoters[voter.identifier] = voter;
+      votesProcessed[voter.identifier] = false;
     }
 
-    private isElectionState(): boolean {
-        return this.electionState >= ElectionState.Started && this.electionState <= ElectionState.Ended;
+    // console.log("Voters: ", this.voters);
+
+    let counter_votes: number = 0;
+    let sum_durations: number = 0;
+
+    for (const voter of this.voters) {
+      if (votesProcessed[voter.identifier]) {
+        console.log("Voter already voted.");
+      }
+
+      if (!voter.state) continue;
+      if (voter.identifier === "00000" || voter.identifier === "20000")
+        continue; // It belongs to the first transactions added by default. They mustn't be processes :)
+
+      await this.placeVote(voter);
+
+      // Duration
+      const startTime: Date = new Date(this.announcement.startTimeVoting);
+      const endTime: Date = new Date(voter.voteTime);
+
+      const duraction = (endTime.getTime() - startTime.getTime()) / (1000 * 60); // In minutes
+      sum_durations += duraction;
+
+      if (voter.state) {
+        counter_votes++;
+        votesProcessed[voter.identifier] = true;
+      }
     }
 
-    public async getVoters() {
-        try {
-            this.votersTest = await readVoters();
-        } catch (_) {
-            // Handle silently
-        }
+    const duractionPerVote = sum_durations / counter_votes;
+    const winner: Candidate = this.winningCandidate();
 
-        return this.votersTest;
+    const candidate_results: CandidateResult[] = [];
+    for (const x of this.candidates) {
+      const value = this.hashCandidates[x.code];
+
+      const candidateResult: CandidateResult = {
+        numVotes: value.num_votes,
+        percentage: (value.num_votes * 100) / this.announcement.numOfVoters,
+        candidate: value,
+      };
+
+      candidate_results.push(candidateResult);
     }
 
-    public async getCandidates() {
-        try {
-            this.candidatesTest = await readCandidates();
-        } catch (_) {
-            // Handle silently
-        }
+    const startTime: number = new Date(
+      this.announcement.startTimeVoting,
+    ).getTime(); // .getMilliseconds();
+    const endTime: number = new Date(this.announcement.endTimeVoting).getTime(); // .getMilliseconds();
 
-        return this.candidatesTest;
+    let sum: number = 0;
+    this.provinces.forEach((x) => {
+      sum += this.statsPerProvince[x]["sum"];
+    });
+
+    const averageVotePerProvince = sum / 18;
+
+    const results: Results = {
+      startTime: startTime,
+      endTime: endTime,
+      winner: winner,
+      expectedTotalVotes: this.announcement.numOfVoters,
+      totalVotesReceived: counter_votes,
+      totalCandidates: this.announcement.numOfCandidates,
+      averageTimePerVote: duractionPerVote,
+      candidatesResult: candidate_results,
+      votesPerProvince: this.statsPerProvince,
+      averageVotePerProvince: averageVotePerProvince,
+      votesPerDay: 0,
+      votesPerParty: this.statsPerProvince,
+    };
+
+    writeResults(results);
+    this.loadResults();
+    // console.log("Results: ", results);
+
+    this.results = results;
+  }
+
+  private async placeVote(voter: Voter) {
+    if (!(await this.existsVoter(voter))) {
+      console.log("Voter does not exist.");
+      return;
     }
 
-    public async eraseVoters() {
-        try {
-            await clearVoters();
-            await this.loadVoters();
-        } catch (_) {
-            // Handle silently
-        }
+    if (!this.isValidElectionTime()) {
+      console.log("Invalid voting time.");
+      return;
     }
 
-    public async eraseResults() {
-        try {
-            await clearResults();
-            this.results = null;
-            await this.loadResults();
-        } catch (_) {
-            // Handle silently
-        }
+    const objData = {
+      CIPHER_TEXT: voter.choiceCode,
+      IV: voter.IV,
+    };
+
+    const choice_code: string = CryptoBlockVote.decryptData(objData);
+
+    if (!this.existsCandidate(choice_code)) {
+      console.log("Candidate does not exist.");
+      return;
     }
 
-    public revealVoter(voter: Voter) {
-        const objData = {
-            IV: voter.electoralIV,
-            CIPHER_TEXT: voter.electoralId,
-        }
+    this.hashVoters[voter.identifier].state = true;
+    this.hashCandidates[choice_code].num_votes++;
 
-        const ans = {
-            electoralId: CryptoBlockIdentifier.decryptData(objData),
-            identifier: voter.identifier
-        }
+    // Put It in the statistic
+    const voterFound = this.revealVoter(voter);
+    const electoralId: string = voterFound.electoralId;
 
-        return ans;
+    const citizen: Citizen = this.citizens.find(
+      (x) => x.electoralId === electoralId,
+    );
+    const province: string = citizen.province;
+
+    if (this.provinces.find((x) => x === province)) {
+      const currentStatOfPrivince = this.statsPerProvince[province];
+      currentStatOfPrivince[this.hashCandidates[choice_code].party]++;
+      currentStatOfPrivince["sum"]++;
+      this.statsPerProvince[province] = currentStatOfPrivince;
     }
+  }
 
-    private announceElection() {
-        this.electionState = ElectionState.Announced;
-    }
-
-    private startElection() {
-        this.electionState = ElectionState.Started;
-    }
-
-    private endElection() {
-        this.electionState = ElectionState.Ended;
-    }
-
-    private async existsVoter(voter: Voter): Promise<boolean> {
-        const res = voter.identifier in this.hashVoters;
-        return res;
-    }
-
-    private existsCandidate(code: string): boolean {
-        return code in this.hashCandidates;
-    }
-
-    private async processVotes(): Promise<void> {
-        for (const candidate of this.candidates) {
-            this.hashCandidates[candidate.code] = candidate;
-        }
-
-        const votesProcessed: HashMap<boolean> = {};
-
-        this.electionState = ElectionState.Ended;
-
-        for (const voter of this.voters) {
-            this.hashVoters[voter.identifier] = voter;
-            votesProcessed[voter.identifier] = false;
-        }
-
-        // console.log("Voters: ", this.voters);
-
-        let counter_votes: number = 0;
-        let sum_durations: number = 0;
-
-        for (const voter of this.voters) {
-
-            if (votesProcessed[voter.identifier]) {
-                console.log("Voter already voted.");
-            }
-
-            if (!voter.state) continue;
-            if (voter.identifier === "00000" || voter.identifier === "20000") continue; // It belongs to the first transactions added by default. They mustn't be processes :)
-
-            await this.placeVote(voter);
-
-            // Duration
-            const startTime: Date = new Date(this.announcement.startTimeVoting);
-            const endTime: Date = new Date(voter.voteTime);
-
-            const duraction = (endTime.getTime() - startTime.getTime()) / (1000 * 60); // In minutes
-            sum_durations += duraction;
-
-            if (voter.state) {
-                counter_votes++;
-                votesProcessed[voter.identifier] = true;
-            }
-        }
-
-        const duractionPerVote = sum_durations / counter_votes;
-        const winner: Candidate = this.winningCandidate();
-
-        const candidate_results: CandidateResult[] = [];
-        for (const x of this.candidates) {
-            const value = this.hashCandidates[x.code];
-
-            const candidateResult: CandidateResult = {
-                numVotes: value.num_votes,
-                percentage: (value.num_votes * 100) / this.announcement.numOfVoters,
-                candidate: value
-            };
-
-            candidate_results.push(candidateResult);
-        }
-
-        const startTime: number = new Date(this.announcement.startTimeVoting).getTime(); // .getMilliseconds();
-        const endTime: number = new Date(this.announcement.endTimeVoting).getTime(); // .getMilliseconds();
-
-        let sum: number = 0;
-        this.provinces.forEach(x => {
-            sum += this.statsPerProvince[x]['sum'];
-        })
-
-        const averageVotePerProvince = sum / 18;
-
-        const results: Results = {
-            startTime: startTime,
-            endTime: endTime,
-            winner: winner,
-            expectedTotalVotes: this.announcement.numOfVoters,
-            totalVotesReceived: counter_votes,
-            totalCandidates: this.announcement.numOfCandidates,
-            averageTimePerVote: duractionPerVote,
-            candidatesResult: candidate_results,
-            votesPerProvince: this.statsPerProvince,
-            averageVotePerProvince: averageVotePerProvince,
-            votesPerDay: 0,
-            votesPerParty: this.statsPerProvince,
-        };
-
-        writeResults(results);
-        this.loadResults();
-        // console.log("Results: ", results);
-
-        this.results = results;
-    }
-
-    private async placeVote(voter: Voter) {
-        if (!(await this.existsVoter(voter))) {
-            console.log("Voter does not exist.");
-            return;
-        }
-
-        if (!this.isValidElectionTime()) {
-            console.log("Invalid voting time.");
-            return;
-        }
-
-        const objData = {
-            CIPHER_TEXT: voter.choiceCode,
-            IV: voter.IV,
-        }
-
-        const choice_code: string = CryptoBlockVote.decryptData(objData);
-
-        if (!this.existsCandidate(choice_code)) {
-            console.log("Candidate does not exist.");
-            return;
-        }
-
-        this.hashVoters[voter.identifier].state = true;
-        this.hashCandidates[choice_code].num_votes++;
-
-        // Put It in the statistic
-        const voterFound = this.revealVoter(voter) ;
-        const electoralId: string = voterFound.electoralId;
-
-        const citizen: Citizen = this.citizens.find(x => x.electoralId === electoralId);
-        const province: string = citizen.province;
-
-        if (this.provinces.find(x => x === province)) {
-            const currentStatOfPrivince = this.statsPerProvince[province];
-            currentStatOfPrivince[this.hashCandidates[choice_code].party]++;
-            currentStatOfPrivince['sum']++;
-            this.statsPerProvince[province] = currentStatOfPrivince;
-        }
-    }
-
-    // Unused method - can be removed or implemented properly if needed
-    /* private getProvince(text: string) {
+  // Unused method - can be removed or implemented properly if needed
+  /* private getProvince(text: string) {
         // Implementation needed
     }*/
 
-    public winningCandidate() {
-        if (this.candidates === null || this.candidates === undefined || this.candidates.length === 0) return null;
+  public winningCandidate() {
+    if (
+      this.candidates === null ||
+      this.candidates === undefined ||
+      this.candidates.length === 0
+    )
+      return null;
 
-        const winnerCandidate: Candidate = this.candidates.reduce(
-            (prev, curr) => (prev.num_votes > curr.num_votes) ? prev : curr
-        );
+    const winnerCandidate: Candidate = this.candidates.reduce((prev, curr) =>
+      prev.num_votes > curr.num_votes ? prev : curr,
+    );
 
-        const num_winners = this.candidates.filter(x => x.num_votes === winnerCandidate.num_votes).length;
+    const num_winners = this.candidates.filter(
+      (x) => x.num_votes === winnerCandidate.num_votes,
+    ).length;
 
-        if (winnerCandidate.num_votes === 0 || num_winners >= 2) return null; // No winner If candidates tie.
+    if (winnerCandidate.num_votes === 0 || num_winners >= 2) return null; // No winner If candidates tie.
 
-        return winnerCandidate;
-    }
+    return winnerCandidate;
+  }
 
-    private candidateResults() {
-        return this.results.candidatesResult;
-    }
+  private candidateResults() {
+    return this.results.candidatesResult;
+  }
 
-    private timestampToDate(timestamp: number): Date {
-        return new Date(timestamp * 1000);
-    }
+  private timestampToDate(timestamp: number): Date {
+    return new Date(timestamp * 1000);
+  }
 
-    public async getResults(): Promise<Results> {
-        await this.initVariables();
-        await this.processVotes();
-        return this.results;
-    }
+  public async getResults(): Promise<Results> {
+    await this.initVariables();
+    await this.processVotes();
+    return this.results;
+  }
 
-    public async getResultsComputed(): Promise<Results> {
-        await this.initVariables();
-        return this.results;
-    }
+  public async getResultsComputed(): Promise<Results> {
+    await this.initVariables();
+    return this.results;
+  }
 }
 
 export default SmartContract;

@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
-import path from 'path'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
+import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -15,37 +15,34 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom'],
+          vendor: ["react", "react-dom"],
         },
       },
     },
-    target: 'es2015',
-    outDir: 'dist',
+    target: "es2015",
+    outDir: "dist",
     emptyOutDir: true,
-    assetsDir: 'assets',
+    assetsDir: "assets",
     cssCodeSplit: true,
     reportCompressedSize: false,
     esbuild: {
       logOverride: {
-        'this-is-undefined-in-esm': 'silent'
-      }
-    }
+        "this-is-undefined-in-esm": "silent",
+      },
+    },
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      "@": path.resolve(__dirname, "./src"),
     },
   },
   server: {
     host: true,
-    allowedHosts: [
-      'localhost',
-      '.manus.computer'
-    ]
+    allowedHosts: ["localhost", ".manus.computer"],
   },
   esbuild: {
     logOverride: {
-      'this-is-undefined-in-esm': 'silent'
-    }
-  }
-})
+      "this-is-undefined-in-esm": "silent",
+    },
+  },
+});

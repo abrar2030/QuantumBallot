@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { MD3LightTheme as DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
-import { News } from '@screens/News';
-import { Candidates } from '@screens/Candidates';
-import { useAuth } from 'src/context/AuthContext';
-import { Credentials } from '@screens/Credentials';
-import { loadImages } from 'src/service/firebase';
+import React, { useEffect, useState } from "react";
+import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import {
+  MD3LightTheme as DefaultTheme,
+  Provider as PaperProvider,
+} from "react-native-paper";
+import { News } from "@screens/News";
+import { Candidates } from "@screens/Candidates";
+import { useAuth } from "src/context/AuthContext";
+import { Credentials } from "@screens/Credentials";
+import { loadImages } from "src/service/firebase";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -19,7 +22,7 @@ export declare type Theme_ = {
     text: string;
     border: string;
     notification: string;
-    secondaryContainer: string
+    secondaryContainer: string;
   };
 };
 
@@ -28,13 +31,13 @@ const theme_: Theme_ = {
   dark: false,
   colors: {
     ...DefaultTheme.colors,
-    primary: 'red',
-    background: 'transparent',
-    card: '',
-    text: '',
-    border: '',
-    notification: '',
-    secondaryContainer: 'rgba(40, 40, 40, 0.4)'
+    primary: "red",
+    background: "transparent",
+    card: "",
+    text: "",
+    border: "",
+    notification: "",
+    secondaryContainer: "rgba(40, 40, 40, 0.4)",
   },
 };
 
@@ -58,27 +61,34 @@ export function BottomNavigation({ navigation }: any) {
         initialRouteName="News"
         activeColor="#c2c2c2"
         inactiveColor="#4e4e4e"
-        barStyle={{ backgroundColor: '#010101' }}
+        barStyle={{ backgroundColor: "#010101" }}
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color }) => {
             const size = 23;
 
             if (route.name === "News") {
-              return <Icon name="newspaper-variant-outline" size={size} color={color} />;
+              return (
+                <Icon
+                  name="newspaper-variant-outline"
+                  size={size}
+                  color={color}
+                />
+              );
             } else if (route.name === "Candidates") {
               return <Icon name="account-group" size={size} color={color} />;
             } else if (route.name === "Data") {
               return <Icon name="database" size={size} color={color} />;
-            } if (route.name === "Registration") {
+            }
+            if (route.name === "Registration") {
               return <Icon name="database" size={size} color={color} />;
             }
 
             return <Icon name="login" size={size} color={color} />;
           },
-          tabBarInactiveTintColor: '#3d3333',
-          tabBarColor: '#0a6100',
+          tabBarInactiveTintColor: "#3d3333",
+          tabBarColor: "#0a6100",
           tabBarStyle: {
-            background: '#c70b0b',
+            background: "#c70b0b",
           },
           headerShown: false,
         })}
@@ -86,7 +96,6 @@ export function BottomNavigation({ navigation }: any) {
         <Tab.Screen name="News" component={News} />
         <Tab.Screen name="Candidates" component={Candidates} />
         <Tab.Screen name="Data" component={Credentials} />
-
       </Tab.Navigator>
     </PaperProvider>
   );
