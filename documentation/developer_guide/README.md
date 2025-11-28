@@ -820,4 +820,3 @@ When reporting issues, please include:
 4. Actual behavior
 5. Environment details (OS, browser, Node.js version, etc.)
 6. Screenshots or error logs if applicable
-
