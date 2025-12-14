@@ -1,0 +1,26 @@
+# Example Ansible Vault file
+# Create actual vault with: ansible-vault create .vault
+# Edit vault with: ansible-vault edit .vault
+
+# Database credentials
+db_host: "your-database-host.rds.amazonaws.com"
+db_name: "quantumballot"
+db_user: "dbadmin"
+db_password: "your-secure-password"
+
+# JWT secret
+jwt_secret: "your-jwt-secret-key"
+
+# Grafana admin password
+grafana_admin_password: "your-grafana-password"
+
+# SSL certificates (if managing via Ansible)
+ssl_certificate: |
+  -----BEGIN CERTIFICATE-----
+  ...
+  -----END CERTIFICATE-----
+
+ssl_private_key: |
+  -----BEGIN PRIVATE KEY-----
+  ...
+  -----END PRIVATE KEY-----

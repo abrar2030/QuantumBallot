@@ -1,0 +1,15 @@
+# Example Terraform variables for dev environment
+# Copy this file to terraform.tfvars and fill in your values
+
+aws_region         = "us-east-1"
+environment_name   = "dev"
+
+# Backend configuration
+backend_port                = 3000
+backend_docker_image_tag    = "latest"
+backend_instance_type       = "t3.micro"
+backend_ami_id              = "ami-0c55b159cbfafe1f0"  # Update with current Amazon Linux 2 AMI
+
+# Frontend configuration
+frontend_domain_name        = ""  # e.g., "quantumballot-dev.example.com"
+frontend_certificate_arn    = ""  # ARN of ACM certificate if using custom domain

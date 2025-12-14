@@ -63,7 +63,7 @@ resource "aws_internet_gateway" "gw" {
 
 # Elastic IPs for NAT Gateways
 resource "aws_eip" "nat" {
-  count = 3
+  count  = 3
   domain = "vpc"
 
   tags = {
@@ -144,7 +144,7 @@ module "backend" {
 
   environment_name = var.environment_name
   vpc_id           = aws_vpc.main.id
-  subnet_ids       = aws_subnet.private[*].id  # Use private subnets for production
+  subnet_ids       = aws_subnet.private[*].id # Use private subnets for production
   backend_port     = var.backend_port
   # Construct ECR image URI
   docker_image_uri = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/${var.environment_name}/QuantumBallot-backend:${var.backend_docker_image_tag}"

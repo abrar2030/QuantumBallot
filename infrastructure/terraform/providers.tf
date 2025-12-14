@@ -1,6 +1,8 @@
 # Terraform provider configuration
 
 terraform {
+  required_version = ">= 1.6.0, < 2.0.0"
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -8,7 +10,8 @@ terraform {
     }
   }
 
-  # Configure backend for state management (e.g., S3)
+  # Backend configuration for local dev (use local state)
+  # For remote state, uncomment and configure:
   # backend "s3" {
   #   bucket         = "your-terraform-state-bucket-name"
   #   key            = "QuantumBallot/terraform.tfstate"
@@ -20,7 +23,7 @@ terraform {
 
 provider "aws" {
   region = var.aws_region
-  # Assume credentials are configured via environment variables, IAM role, or shared credentials file
+  # Credentials configured via environment variables, IAM role, or shared credentials file
 }
 
 variable "aws_region" {

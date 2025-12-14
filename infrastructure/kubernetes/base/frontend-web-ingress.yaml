@@ -1,3 +1,4 @@
+---
 # Note: This ingress corresponds to the frontend-web-deployment if run in K8s.
 
 apiVersion: networking.k8s.io/v1

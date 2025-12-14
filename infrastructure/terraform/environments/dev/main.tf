@@ -23,10 +23,10 @@ resource "aws_vpc" "main" {
 
 # Public Subnets
 resource "aws_subnet" "public" {
-  count             = 2 # Create two public subnets in different AZs
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 8, count.index)
-  availability_zone = data.aws_availability_zones.available.names[count.index]
+  count                   = 2 # Create two public subnets in different AZs
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = cidrsubnet(aws_vpc.main.cidr_block, 8, count.index)
+  availability_zone       = data.aws_availability_zones.available.names[count.index]
   map_public_ip_on_launch = true
 
   tags = {
@@ -79,9 +79,9 @@ module "backend" {
 
   environment_name = var.environment_name
 
-  vpc_id           = aws_vpc.main.id
-  subnet_ids       = aws_subnet.public[*].id
-  backend_port     = var.backend_port
+  vpc_id       = aws_vpc.main.id
+  subnet_ids   = aws_subnet.public[*].id
+  backend_port = var.backend_port
   # Construct ECR image URI
   docker_image_uri = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/${var.environment_name}/QuantumBallot-backend:${var.backend_docker_image_tag}"
 

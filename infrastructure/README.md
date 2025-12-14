@@ -1,121 +1,319 @@
 # QuantumBallot Infrastructure
 
-This directory contains the infrastructure configuration and deployment resources for the QuantumBallot project, a full-stack Web and Mobile application for American elections using Blockchain Technology. The infrastructure components are organized into several specialized subdirectories, each focusing on different aspects of deployment, orchestration, and infrastructure management.
+Complete infrastructure-as-code setup for the QuantumBallot project, including Terraform, Kubernetes, Ansible, and CI/CD configurations.
 
-## Overview
+## Prerequisites
 
-The infrastructure directory provides all necessary configurations and scripts to deploy, manage, and scale the QuantumBallot application across various environments. It follows infrastructure-as-code principles, ensuring consistent, reproducible deployments and environment configurations.
+### Required Tools
+
+Install the following tools before working with this infrastructure:
+
+```bash
+# Terraform (>= 1.6.0)
+wget https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip
+unzip terraform_1.6.6_linux_amd64.zip
+sudo mv terraform /usr/local/bin/
+terraform version
+
+# kubectl (>= 1.20)
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+kubectl version --client
+
+# Ansible (>= 2.9)
+pip3 install ansible ansible-lint
+
+# YAML linting
+sudo apt-get install yamllint
+# OR: pip3 install yamllint
+
+# Kustomize (>= 4.0)
+curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+sudo mv kustomize /usr/local/bin/
+
+# Optional: tflint for Terraform linting
+curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+
+# Optional: tfsec for Terraform security scanning
+curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+```
+
+### Cloud Provider Access
+
+- AWS CLI configured with appropriate credentials
+- IAM permissions for creating resources (EC2, ECS, S3, CloudFront, VPC, etc.)
 
 ## Directory Structure
 
-The infrastructure is organized into the following subdirectories:
+```
+infrastructure/
+├── README.md                    # This file
+├── terraform/                   # Terraform IaC
+│   ├── providers.tf             # Provider and version constraints
+│   ├── environments/
+│   │   ├── dev/                 # Development environment
+│   │   │   ├── main.tf
+│   │   │   ├── variables.tf
+│   │   │   └── terraform.tfvars.example
+│   │   └── prod/                # Production environment
+│   │       ├── main.tf
+│   │       ├── variables.tf
+│   │       └── terraform.tfvars.example
+│   └── modules/
+│       ├── backend/             # Backend API module
+│       └── frontend_web/        # Web frontend module
+├── kubernetes/                  # Kubernetes manifests
+│   ├── base/                    # Base configurations
+│   │   ├── namespace.yaml
+│   │   ├── backend-deployment.yaml
+│   │   ├── backend-service.yaml
+│   │   ├── backend-secret.example.yaml  # Secret template
+│   │   └── kustomization.yaml
+│   └── overlays/                # Environment-specific overlays
+│       ├── dev/
+│       └── prod/
+├── ansible/                     # Ansible playbooks
+│   ├── ansible.cfg
+│   ├── site.yml                 # Main playbook
+│   ├── inventory.example        # Inventory template
+│   ├── .vault.example           # Vault template
+│   ├── hosts                    # Actual inventory (placeholder)
+│   └── roles/                   # Ansible roles
+├── ci-cd/                       # CI/CD workflows
+│   ├── main.yml
+│   ├── backend-api.yml
+│   ├── web-frontend.yml
+│   └── documentation.yml
+└── validation_logs/             # Validation outputs
+    ├── terraform_fmt_after.txt
+    ├── terraform_validate.txt
+    ├── kubernetes_validate.txt
+    └── ansible_lint.txt
+```
 
-### Ansible
+## Quick Start
 
-The `ansible` directory contains configuration management and application deployment resources using Ansible, an open-source automation tool. Key components include:
+### 1. Terraform Setup
 
-- `ansible.cfg`: Configuration file for Ansible settings
-- `hosts`: Inventory file defining target servers and their groupings
-- `roles/`: Directory containing reusable Ansible roles for various system configurations
-- `site.yml`: Main playbook that orchestrates the application deployment
+```bash
+cd terraform/environments/dev
 
-Ansible is primarily used for server provisioning, configuration management, and application deployment across different environments.
+# Create your variables file from example
+cp terraform.tfvars.example terraform.tfvars
+# Edit terraform.tfvars with your actual values
+nano terraform.tfvars
 
-### Docker
+# Initialize Terraform (local backend)
+terraform init -backend=false
 
-The `docker` directory contains Docker-related configuration files for containerizing the QuantumBallot application components:
+# Validate configuration
+terraform validate
 
-- `backend.Dockerfile`: Dockerfile for building the backend API container
-- `frontend-web.Dockerfile`: Dockerfile for building the web frontend container
-- `docker-compose.yml`: Composition file for local development and testing
-- `nginx.conf`: Nginx configuration for the web server container
+# Format code
+terraform fmt -recursive
 
-These Docker configurations enable consistent development environments and simplified deployment processes.
+# Plan deployment (dry run)
+terraform plan -out=dev.tfplan
 
-### Kubernetes
+# Apply (creates resources)
+# terraform apply dev.tfplan
+```
 
-The `kubernetes` directory contains Kubernetes manifests for orchestrating containerized applications in production and staging environments:
+### 2. Kubernetes Deployment
 
-- `base/`: Directory containing base Kubernetes configurations
-- `overlays/`: Directory containing environment-specific overlays using Kustomize
+```bash
+cd kubernetes
 
-The Kubernetes configurations follow the Kustomize pattern, allowing for environment-specific customizations while maintaining a common base configuration.
+# Create secret from example
+cp base/backend-secret.example.yaml base/backend-secret.yaml
+# Edit backend-secret.yaml with actual values
+nano base/backend-secret.yaml
+
+# Validate manifests
+yamllint base/
+kustomize build overlays/dev | kubectl apply --dry-run=client -f -
+
+# Apply to cluster (dev environment)
+kubectl apply -k overlays/dev
+
+# Check deployment status
+kubectl get all -n quantumballot
+```
+
+### 3. Ansible Configuration
+
+```bash
+cd ansible
+
+# Create inventory from example
+cp inventory.example inventory
+# Edit inventory with your server IPs
+nano inventory
+
+# Create vault for secrets
+ansible-vault create .vault
+# Add sensitive variables to vault
+
+# Run playbook in check mode (dry run)
+ansible-playbook -i inventory site.yml --check
+
+# Run actual deployment
+# ansible-playbook -i inventory site.yml --ask-vault-pass
+```
+
+## Validation Commands
+
+### Terraform Validation
+
+```bash
+cd terraform
+terraform fmt -recursive -check     # Check formatting
+terraform fmt -recursive            # Fix formatting
+terraform init -backend=false       # Initialize without remote backend
+terraform validate                  # Validate syntax
+```
+
+### Kubernetes Validation
+
+```bash
+cd kubernetes
+yamllint base/                      # YAML syntax check
+yamllint overlays/
+
+# Validate with kustomize
+kustomize build base
+kustomize build overlays/dev
+
+# Validate with kubectl (requires cluster access)
+kubectl apply --dry-run=client -k overlays/dev
+```
+
+### Ansible Validation
+
+```bash
+cd ansible
+ansible-lint .                      # Lint playbooks
+yamllint .                          # YAML syntax
+ansible-playbook -i inventory.example site.yml --syntax-check
+```
+
+### CI/CD Validation
+
+```bash
+cd ci-cd
+yamllint *.yml
+
+# For GitHub Actions workflows
+# Use actionlint: https://github.com/rhysd/actionlint
+```
+
+## Environment Variables
 
 ### Terraform
 
-The `terraform` directory contains infrastructure-as-code configurations using Terraform for provisioning cloud resources:
+Set these before running Terraform:
 
-- `environments/`: Directory containing environment-specific Terraform configurations
-- `modules/`: Directory containing reusable Terraform modules
-- `providers.tf`: Provider configuration for cloud services
+```bash
+export AWS_ACCESS_KEY_ID="your-access-key"
+export AWS_SECRET_ACCESS_KEY="your-secret-key"
+export AWS_DEFAULT_REGION="us-east-1"
+```
 
-Terraform is used to provision and manage cloud infrastructure resources across different environments.
+### Ansible
 
-## Usage
+Set these for Ansible playbooks:
 
-### Local Development
+```bash
+export DB_HOST="your-db-host"
+export DB_NAME="quantumballot"
+export DB_USER="dbuser"
+export DB_PASSWORD="secure-password"
+export GRAFANA_ADMIN_PASSWORD="grafana-password"
+```
 
-For local development using Docker:
+## Security Best Practices
 
-1. Navigate to the `docker` directory
-2. Run the following command to start all services:
-   ```
-   docker-compose up -d
-   ```
-3. Access the application at http://localhost:8080
+1. **Never commit secrets** - Use `.gitignore` for:
+   - `terraform.tfvars`
+   - `*.tfstate`
+   - `*.tfstate.backup`
+   - `ansible/.vault`
+   - `kubernetes/**/secret.yaml` (non-example)
 
-### Deployment
+2. **Use secret management** - In production:
+   - AWS Secrets Manager for Terraform
+   - Kubernetes Secrets with encryption at rest
+   - Ansible Vault for configuration management
 
-#### Using Ansible
+3. **Restrict access** - Follow least privilege:
+   - IAM roles for AWS resources
+   - RBAC for Kubernetes
+   - Bastion hosts for SSH access
 
-1. Update the `hosts` file with your target servers
-2. Run the deployment playbook:
-   ```
-   ansible-playbook -i hosts site.yml
-   ```
+4. **Encrypt state** - Use remote state with encryption:
+   - S3 backend with encryption enabled
+   - DynamoDB for state locking
 
-#### Using Kubernetes
+## Troubleshooting
 
-1. Ensure you have `kubectl` and `kustomize` installed
-2. Select the appropriate environment overlay:
-   ```
-   kubectl apply -k kubernetes/overlays/[environment]
-   ```
-   Where `[environment]` is one of: dev, staging, production
+### Terraform Issues
 
-#### Using Terraform
+**Problem**: `Error: No valid credential sources found`
+**Solution**: Configure AWS credentials via environment variables or `~/.aws/credentials`
 
-1. Navigate to the appropriate environment directory:
-   ```
-   cd terraform/environments/[environment]
-   ```
-2. Initialize and apply the Terraform configuration:
-   ```
-   terraform init
-   terraform apply
-   ```
+**Problem**: `Error: Backend initialization required`
+**Solution**: Run `terraform init` before other commands
 
-## Best Practices
+### Kubernetes Issues
 
-When working with the infrastructure code:
+**Problem**: `error: You must be logged in to the server`
+**Solution**: Configure kubectl with `aws eks update-kubeconfig` or your cluster config
 
-1. Always test changes in development or staging environments before applying to production
-2. Keep secrets and sensitive information out of version control
-3. Use environment variables or secret management solutions for credentials
-4. Document any significant changes to the infrastructure configuration
-5. Follow the principle of immutable infrastructure where possible
-6. Use infrastructure-as-code for all resource provisioning to ensure consistency
+**Problem**: Image pull errors
+**Solution**: Ensure ECR authentication is set up and image exists
 
-## Requirements
+### Ansible Issues
 
-- Docker and Docker Compose for local development
-- Ansible 2.9+ for configuration management
-- Kubernetes 1.20+ for container orchestration
-- Terraform 1.0+ for infrastructure provisioning
-- Access to target cloud provider accounts (AWS, GCP, or Azure)
+**Problem**: `Host key verification failed`
+**Solution**: Add `host_key_checking = False` to `ansible.cfg` or add hosts to `known_hosts`
 
-## Related Resources
+**Problem**: Permission denied
+**Solution**: Ensure SSH keys are configured and user has sudo privileges
 
-- For application-specific configuration, refer to the `backend` and `web-frontend` directories
-- For deployment scripts, check the `scripts` directory at the root of the repository
-- For detailed system architecture, consult the documentation in the `docs` directory
+## CI/CD Integration
+
+The CI/CD workflows in `ci-cd/` directory integrate with GitHub Actions and include:
+
+- Automated testing and validation
+- Terraform plan on pull requests
+- Kubernetes manifest validation
+- Ansible playbook linting
+- Documentation deployment
+
+### Required GitHub Secrets
+
+Configure these secrets in your GitHub repository:
+
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+- `KUBE_CONFIG` (base64 encoded)
+- `ANSIBLE_VAULT_PASSWORD`
+
+## Additional Resources
+
+- [Terraform AWS Provider Docs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
+- [Kubernetes Documentation](https://kubernetes.io/docs/)
+- [Ansible Documentation](https://docs.ansible.com/)
+- [QuantumBallot Project Docs](../docs/)
+
+## Support
+
+For issues or questions:
+
+1. Check the troubleshooting section above
+2. Review validation logs in `validation_logs/`
+3. Open an issue in the GitHub repository
+
+## License
+
+See [LICENSE](../LICENSE) file in the repository root.

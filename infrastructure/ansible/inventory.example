@@ -1,0 +1,50 @@
+# Example Ansible Inventory for QuantumBallot
+# Copy this file to 'inventory' or 'hosts' and fill in your server details
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
+ansible_user=ubuntu
+# ansible_ssh_private_key_file=~/.ssh/your_key.pem
+
+# Development Environment
+[dev_backend_servers]
+# dev-backend-1 ansible_host=10.0.1.10
+
+[dev_web_servers]
+# dev-web-1 ansible_host=10.0.1.20
+
+[dev_servers:children]
+dev_backend_servers
+dev_web_servers
+
+[dev_servers:vars]
+environment=dev
+backend_api_url=https://api-dev.quantumballot.example.com
+
+# Production Environment
+[prod_backend_servers]
+# prod-backend-1 ansible_host=10.0.2.10
+# prod-backend-2 ansible_host=10.0.2.11
+
+[prod_web_servers]
+# prod-web-1 ansible_host=10.0.2.20
+
+[prod_servers:children]
+prod_backend_servers
+prod_web_servers
+
+[prod_servers:vars]
+environment=prod
+backend_api_url=https://api.quantumballot.example.com
+
+# Functional Groups
+[backend_servers:children]
+dev_backend_servers
+prod_backend_servers
+
+[web_servers:children]
+dev_web_servers
+prod_web_servers
+
+[frontend_servers:children]
+web_servers
