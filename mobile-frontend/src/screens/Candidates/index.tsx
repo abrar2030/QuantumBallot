@@ -4,18 +4,22 @@ import { HeaderElection } from "@components/HeaderElection";
 import { LiveProjection } from "@components/LiveProjection";
 import { CandidatesList } from "@components/CandidatesList";
 import { useAuth } from "src/context/AuthContext";
-import { loadImages } from "src/service/firebase";
 
 export function Candidates({ navigation }: any) {
-  const { authState, onLogOut, isLoggedIn } = useAuth();
+  const { authState, isLoggedIn } = useAuth();
   const [activeScreen, setActiveScreen] = useState("Login");
 
   useEffect(() => {
-    isLoggedIn!();
-    if (!authState?.authenticated) {
-      setActiveScreen("Login");
-    }
-  }, []);
+    const checkAuth = async () => {
+      if (isLoggedIn) {
+        await isLoggedIn();
+      }
+      if (!authState?.authenticated) {
+        setActiveScreen("Login");
+      }
+    };
+    checkAuth();
+  }, [authState]);
 
   return (
     <View style={styles.container}>

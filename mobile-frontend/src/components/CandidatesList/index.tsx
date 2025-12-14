@@ -1,27 +1,45 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
-
-import profileImg from "@assets/abrar_party_50.png";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import { CandidateItem } from "@components/CandidateItem";
 import { useAuth } from "src/context/AuthContext";
-
 import axios from "src/api/axios";
+import { Config } from "../../constants/config";
+
+interface Candidate {
+  id: number;
+  code: number;
+  name: string;
+  party: string;
+  acronym?: string;
+  photo: any;
+  src: any;
+  status?: string;
+}
 
 export function CandidatesList({ navigation }: any) {
-  const [candidates, setCandidates] = useState([]);
-
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [loading, setLoading] = useState(true);
   const [xTexts, setXtexts] = useState<string[]>([]);
   const [selected, setSelected] = useState(-1);
 
-  const { imageList, setImageList } = useAuth();
+  const { imageList } = useAuth();
 
-  const onPressLoadCandidates = () => {
-    axios
-      .get("/blockchain/candidates")
-      .then((response) => {
-        const candidates = response.data.candidates;
-        if (candidates) {
-          const newData = candidates.map((element: any, index: number) => {
+  const onPressLoadCandidates = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(Config.ENDPOINTS.CANDIDATES);
+
+      const candidatesData = response.data.candidates;
+      if (candidatesData) {
+        const newData: Candidate[] = candidatesData.map(
+          (element: any, index: number) => {
             const candidatePhotoName = element.name
               .toLowerCase()
               .split(" ")
@@ -41,17 +59,58 @@ export function CandidatesList({ navigation }: any) {
               src: imageList[partyPhotoName],
               status: element.status,
             };
-          });
+          },
+        );
 
-          setCandidates(newData);
-        }
-      })
-      .catch((error) => console.error(error));
+        setCandidates(newData);
+      }
+    } catch (error: any) {
+      if (Config.APP.SHOW_LOGS) {
+        console.error("Error loading candidates:", error);
+      }
+      Alert.alert(
+        "Error",
+        "Failed to load candidates. Please try again later.",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     onPressLoadCandidates();
   }, []);
+
+  if (loading) {
+    return (
+      <View
+        style={[
+          styles.container,
+          { justifyContent: "center", alignItems: "center" },
+        ]}
+      >
+        <ActivityIndicator size="large" color="#2196F3" />
+        <Text style={{ marginTop: 10, color: "#666" }}>
+          Loading candidates...
+        </Text>
+      </View>
+    );
+  }
+
+  if (candidates.length === 0) {
+    return (
+      <View
+        style={[
+          styles.container,
+          { justifyContent: "center", alignItems: "center" },
+        ]}
+      >
+        <Text style={{ color: "#666", fontSize: 16 }}>
+          No candidates available at this time.
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -106,11 +165,5 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     justifyContent: "flex-start",
-  },
-  scrollViewContainer: {
-    flex: 1,
-    backgroundColor: "#a1195d",
-    marginVertical: 0,
-    paddingVertical: 0,
   },
 });

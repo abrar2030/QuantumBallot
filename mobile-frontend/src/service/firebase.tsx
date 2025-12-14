@@ -1,24 +1,20 @@
-import { initializeApp } from "firebase/app";
-import {
-  getDownloadURL,
-  getStorage,
-  listAll,
-  ref,
-  uploadBytes,
-} from "firebase/storage";
+/**
+ * Asset Loading Service
+ * Replaces Firebase for local asset management
+ * In production, this would connect to actual cloud storage
+ */
 
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyDummyKeyForDeployment123456789",
-  authDomain: "QuantumBallot-voter.firebaseapp.com",
-  projectId: "QuantumBallot-voter",
-  storageBucket: "QuantumBallot-voter.appspot.com",
-  messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:abcdef1234567890",
-};
+// Mock function to load images (placeholder for actual implementation)
+export async function loadImages(): Promise<Record<string, any>> {
+  // In a real implementation, this would load candidate images
+  // from an API endpoint or cloud storage
+  // For now, return an empty object since we'll use candidate codes
+  return {};
+}
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const storage = getStorage(app);
-
-export { storage, ref, getDownloadURL, uploadBytes, listAll };
+// Export empty implementations for backwards compatibility
+export const storage = null;
+export const ref = () => null;
+export const getDownloadURL = async () => "";
+export const uploadBytes = async () => ({});
+export const listAll = async () => ({ items: [] });

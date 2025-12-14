@@ -1,42 +1,45 @@
 {
   "expo": {
     "name": "QuantumBallot",
-    "slug": "QuantumBallot-voter",
+    "slug": "quantumballot-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
-      "config": {
-        "usesNonEmptEncryption": false
-      },
-      "usesIcloudStorage": true,
-      "bundleIdentifier": "com.blockchain.election"
+      "bundleIdentifier": "com.quantumballot.mobile"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.blockchain.election"
+      "package": "com.quantumballot.mobile",
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "web": {
-      "favicon": "./assets/favicon.png",
-      "bundler": "metro"
+      "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-font", "expo-secure-store", "expo-av"],
-    "extra": {
-      "eas": {
-        "projectId": "23db0c99-ac06-4556-8c80-693fb773a032"
-      }
-    },
-    "owner": "abrarahmed2030"
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow QuantumBallot to access your camera for QR code scanning."
+        }
+      ]
+    ]
   }
 }

@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "src/api/axios";
 import * as SecureStore from "expo-secure-store";
 import { HashMap } from "src/data_types";
+import { Config } from "../constants/config";
 
 interface AuthProps {
   authState?: {
@@ -13,26 +14,27 @@ interface AuthProps {
   };
   onLogin?: (electoralId: string, password: string) => Promise<any>;
   isLoggedIn?: () => Promise<any>;
-  onRegister?: (electoralId: string, password: string) => Promise<any>;
+  onRegister?: (body: any) => Promise<any>;
   onLogOut?: () => Promise<any>;
   imageList: HashMap<any>;
   setImageList: (imageList: HashMap<any> | undefined) => void;
+  isLoading: boolean;
 }
 
-export const TOKEN_KEY = "my-jwt";
-export const TOKEN_EMAIL = "my-email";
-export const TOKEN_ELECTORAL_ID = "my-electoral-id";
-export const TOKEN_PORT = "my-port";
+export const TOKEN_KEY = Config.STORAGE_KEYS.JWT_TOKEN;
+export const TOKEN_EMAIL = Config.STORAGE_KEYS.EMAIL;
+export const TOKEN_ELECTORAL_ID = Config.STORAGE_KEYS.ELECTORAL_ID;
+export const TOKEN_PORT = Config.STORAGE_KEYS.PORT;
 
-export const LOCALHOST = "http://192.168.0.38:";
-export const PORT = "3010";
-export const API_URL = LOCALHOST + PORT;
+const LOGIN_URL = Config.ENDPOINTS.LOGIN;
+const REGISTER_URL = Config.ENDPOINTS.REGISTER;
+const REFRESH_URL = Config.ENDPOINTS.REFRESH_TOKEN;
 
-const LOGIN_URL = "/committee/auth-mobile";
-const REGISTER_URL = "/committee/register-voter";
-const REFRESH_URL = "/committee/refresh-token";
-
-const AuthContext = createContext<AuthProps>({});
+const AuthContext = createContext<AuthProps>({
+  imageList: {},
+  setImageList: () => {},
+  isLoading: true,
+});
 
 export const useAuth = () => {
   return useContext(AuthContext);
@@ -53,26 +55,35 @@ export const AuthProvider = ({ children }: any) => {
     port: null,
   });
 
-  const [imageList, setImageList] = useState<HashMap<any>>();
+  const [imageList, setImageList] = useState<HashMap<any>>({});
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadToken = async () => {
-      const token = await SecureStore.getItemAsync(TOKEN_KEY);
-      const email = await SecureStore.getItemAsync(TOKEN_EMAIL);
-      const electoralId = await SecureStore.getItemAsync(TOKEN_ELECTORAL_ID);
-      const port = await SecureStore.getItemAsync(TOKEN_PORT);
+      try {
+        const token = await SecureStore.getItemAsync(TOKEN_KEY);
+        const email = await SecureStore.getItemAsync(TOKEN_EMAIL);
+        const electoralId = await SecureStore.getItemAsync(TOKEN_ELECTORAL_ID);
+        const port = await SecureStore.getItemAsync(TOKEN_PORT);
 
-      if (token) {
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        axios.defaults.headers.common["Cookie"] = `jwt=${token}`;
+        if (token) {
+          axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+          axios.defaults.headers.common["Cookie"] = `jwt=${token}`;
 
-        setAuthState({
-          token: token,
-          authenticated: true,
-          email: email,
-          electoralId: electoralId,
-          port: port,
-        });
+          setAuthState({
+            token: token,
+            authenticated: true,
+            email: email,
+            electoralId: electoralId,
+            port: port,
+          });
+        }
+      } catch (error) {
+        if (Config.APP.SHOW_LOGS) {
+          console.error("Error loading token:", error);
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -81,9 +92,21 @@ export const AuthProvider = ({ children }: any) => {
 
   const register = async (body: any) => {
     try {
-      return await axios.post(REGISTER_URL, body);
-    } catch (e) {
-      return { error: true, msg: (e as any).response.data.msg };
+      const response = await axios.post(REGISTER_URL, body);
+      return {
+        success: true,
+        data: response.data,
+        message: response.data.message || "Registration successful",
+      };
+    } catch (e: any) {
+      return {
+        error: true,
+        success: false,
+        message:
+          e.response?.data?.msg ||
+          e.response?.data?.note ||
+          "Registration failed. Please try again.",
+      };
     }
   };
 
@@ -94,48 +117,66 @@ export const AuthProvider = ({ children }: any) => {
         password: password,
       });
 
+      const { accessToken, email, port } = result.data;
+
       setAuthState({
-        token: result.data.accessToken,
+        token: accessToken,
         authenticated: true,
-        email: result.data.email,
+        email: email,
         electoralId: electoralId,
-        port: result.data.port,
+        port: port,
       });
 
-      // console.log("PORT: ", result.data.port);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+      axios.defaults.headers.common["Cookie"] = `jwt=${accessToken}`;
 
-      axios.defaults.headers.common["Authorization"] =
-        `Bearer ${result.data.accessToken}`;
-      axios.defaults.headers.common["Cookie"] =
-        `jwt=${result.data.accessToken}`;
-
-      await SecureStore.setItemAsync(TOKEN_KEY, result.data.accessToken);
-      await SecureStore.setItemAsync(TOKEN_EMAIL, result.data.email);
+      await SecureStore.setItemAsync(TOKEN_KEY, accessToken);
+      await SecureStore.setItemAsync(TOKEN_EMAIL, email);
       await SecureStore.setItemAsync(TOKEN_ELECTORAL_ID, electoralId);
-      await SecureStore.setItemAsync(TOKEN_PORT, result.data.port);
+      await SecureStore.setItemAsync(TOKEN_PORT, port);
 
-      return result;
-    } catch (e) {
-      return { error: true, msg: e };
+      return {
+        success: true,
+        data: result.data,
+        message: "Login successful",
+      };
+    } catch (e: any) {
+      return {
+        error: true,
+        success: false,
+        message:
+          e.response?.data?.msg ||
+          e.response?.data?.note ||
+          "Login failed. Please check your credentials.",
+      };
     }
   };
 
   const logout = async () => {
-    await SecureStore.deleteItemAsync(TOKEN_KEY);
-    await SecureStore.deleteItemAsync(TOKEN_EMAIL);
-    await SecureStore.deleteItemAsync(TOKEN_ELECTORAL_ID);
-    await SecureStore.deleteItemAsync(TOKEN_PORT);
+    try {
+      await SecureStore.deleteItemAsync(TOKEN_KEY);
+      await SecureStore.deleteItemAsync(TOKEN_EMAIL);
+      await SecureStore.deleteItemAsync(TOKEN_ELECTORAL_ID);
+      await SecureStore.deleteItemAsync(TOKEN_PORT);
 
-    axios.defaults.headers.common["Authorization"] = "";
-    axios.defaults.headers.common["Cookie"] = "";
+      axios.defaults.headers.common["Authorization"] = "";
+      axios.defaults.headers.common["Cookie"] = "";
 
-    setAuthState({
-      token: null,
-      authenticated: false,
-      email: "",
-      electoralId: "",
-      port: "",
-    });
+      setAuthState({
+        token: null,
+        authenticated: false,
+        email: null,
+        electoralId: null,
+        port: null,
+      });
+
+      return { success: true };
+    } catch (error) {
+      if (Config.APP.SHOW_LOGS) {
+        console.error("Logout error:", error);
+      }
+      return { success: false, error: true };
+    }
   };
 
   const isLoggedIn = async () => {
@@ -156,22 +197,34 @@ export const AuthProvider = ({ children }: any) => {
 
       if (statusCode === 200) {
         const token = response.data.accessToken;
+        const email = await SecureStore.getItemAsync(TOKEN_EMAIL);
+        const electoralId = await SecureStore.getItemAsync(TOKEN_ELECTORAL_ID);
+        const port = await SecureStore.getItemAsync(TOKEN_PORT);
+
         setAuthState({
           token: token,
           authenticated: true,
-          email: "",
+          email: email || "",
+          electoralId: electoralId || "",
+          port: port || "",
         });
 
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         await SecureStore.setItemAsync(TOKEN_KEY, token);
-        return response;
+
+        return { success: true, authenticated: true };
       } else {
         await logout();
+        return { success: false, authenticated: false };
       }
-
-      return null;
-    } catch (e) {
-      return { error: true, msg: e };
+    } catch (e: any) {
+      await logout();
+      return {
+        error: true,
+        success: false,
+        authenticated: false,
+        message: "Session expired. Please login again.",
+      };
     }
   };
 
@@ -183,6 +236,7 @@ export const AuthProvider = ({ children }: any) => {
     authState,
     imageList,
     setImageList,
+    isLoading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

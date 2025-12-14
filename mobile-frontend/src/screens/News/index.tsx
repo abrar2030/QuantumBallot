@@ -1,3 +1,4 @@
+import React from "react";
 import {
   View,
   StyleSheet,
@@ -6,11 +7,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import theme from "src/theme";
-import { useAuth } from "src/context/AuthContext";
-import axios from "src/api/axios";
-import { Video, ResizeMode } from "expo-av";
 
-export default function News() {
+export function News() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>

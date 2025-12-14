@@ -1,125 +1,297 @@
 # QuantumBallot Mobile Frontend
 
-This directory contains the mobile application frontend for the QuantumBallot project, a full-stack Web and Mobile application for American elections using Blockchain Technology. The mobile frontend is built using React Native with Expo, providing a cross-platform solution for both iOS and Android devices.
+React Native mobile application for secure blockchain-based voting system.
 
-## Overview
+## Features
 
-The QuantumBallot mobile application serves as the primary interface for voters to participate in the election process. It provides a user-friendly experience with features such as authentication, QR code scanning, live election projections, data visualization, and blockchain interaction. The application is designed to be accessible and intuitive, ensuring that voters can easily navigate and participate in the democratic process.
+- 🔐 Secure authentication with JWT
+- 📱 Cross-platform (iOS & Android) support via Expo
+- 🗳️ Vote casting interface with candidate selection
+- 📊 Real-time election results and projections
+- 🔍 QR code scanning for verification
+- 📰 Election news and announcements
+- 🔒 Two-factor authentication support
+- 📡 Offline-ready architecture
 
-## Directory Structure
+## Prerequisites
 
-The mobile frontend is organized as follows:
+- Node.js 16+ and npm/yarn
+- Expo CLI: `npm install -g expo-cli`
+- For iOS: macOS with Xcode
+- For Android: Android Studio with SDK
+- Expo Go app on your mobile device (for testing)
 
-- `src/`: Main source code directory
-  - `@types/`: TypeScript type definitions
-  - `api/`: API client and service integrations
-  - `assets/`: Static assets including images, fonts, and other resources
-  - `components/`: Reusable UI components
-  - `context/`: React context providers for state management
-  - `data_types/`: Data type definitions and interfaces
-  - `hooks/`: Custom React hooks
-  - `routes/`: Navigation configuration and routing
-  - `screens/`: Main application screens and views
-  - `service/`: Service layer for business logic
-  - `theme/`: Styling themes and design system
-- `__tests__/`: Test files and test utilities
-- `__mocks__/`: Mock data and mock implementations for testing
-- `assets/`: Global static assets
-- Configuration files:
-  - `App.tsx`: Main application entry point
-  - `app.json`: Expo configuration
-  - `.babelrc`, `babel.config.js`: Babel configuration
-  - `.eslintrc.js`, `eslint.config.js`: ESLint configuration
-  - `jest.config.js`, `jest.setup.js`: Jest testing configuration
-  - `tsconfig.json`: TypeScript configuration
-  - `eas.json`: Expo Application Services configuration
+## Installation
 
-## Setup and Installation
+1. **Install dependencies:**
 
-### Prerequisites
-
-- Node.js (v16 or later)
-- npm or yarn package manager
-- Expo CLI (`npm install -g expo-cli`)
-- iOS Simulator (for macOS) or Android Emulator
-- Physical device for testing (optional)
-
-### Installation Steps
-
-1. Install dependencies:
-
-   ```
+   ```bash
    npm install
    ```
 
-   or
+2. **Configure environment:**
 
-   ```
-   yarn install
+   ```bash
+   cp .env.example .env
    ```
 
-2. Start the development server:
+   Edit `.env` and set your backend API URL (default: `http://192.168.0.38:3010/api`)
 
-   ```
+3. **Start development server:**
+
+   ```bash
    npm start
+   # or
+   expo start
    ```
 
-   or
+4. **Run on device/emulator:**
 
+   ```bash
+   # Android
+   npm run android
+
+   # iOS (macOS only)
+   npm run ios
+
+   # Web (for testing)
+   npm run web
    ```
-   yarn start
-   ```
 
-3. Run on specific platform:
-   ```
-   npm run ios     # for iOS
-   npm run android # for Android
-   ```
+## Configuration
 
-## Development Guidelines
+### API Endpoint Configuration
 
-### Code Structure
+The API base URL can be configured in `src/constants/config.ts`:
 
-- Follow the established directory structure
-- Create reusable components in the `components/` directory
-- Implement screens in the `screens/` directory
-- Use TypeScript for type safety
-- Leverage React hooks for state management and side effects
+```typescript
+const DEFAULT_API_BASE_URL = "http://192.168.0.38:3010";
+```
 
-### Styling
+For local development, replace `192.168.0.38` with your machine's IP address:
 
-- Use the theme system defined in `src/theme/`
-- Follow the design system for consistent UI
-- Ensure responsive layouts for different device sizes
-- Support both light and dark mode where applicable
+- Find your IP: `ipconfig` (Windows) or `ifconfig` (macOS/Linux)
+- Update the URL in `config.ts`
 
-### Testing
+### Backend Requirements
 
-- Write unit tests for components and services
-- Place test files in the `__tests__/` directory
-- Use Jest and React Testing Library for testing
-- Run tests with `npm test` or `yarn test`
+The mobile app requires the QuantumBallot backend API to be running. From the project root:
+
+```bash
+cd backend-api
+npm install
+npm run dev
+```
+
+The backend should be accessible at `http://<YOUR_IP>:3010`
+
+## Project Structure
+
+```
+mobile-frontend/
+├── src/
+│   ├── components/       # Reusable UI components
+│   │   ├── BottomNavigation/
+│   │   ├── CameraQR/
+│   │   ├── CandidateItem/
+│   │   ├── CandidatesList/
+│   │   └── ...
+│   ├── screens/          # Screen components
+│   │   ├── Login/
+│   │   ├── Registration/
+│   │   ├── Candidates/
+│   │   ├── Groups/       # Voting interface
+│   │   └── ...
+│   ├── routes/           # Navigation configuration
+│   ├── context/          # React Context (Auth, etc.)
+│   ├── api/              # API client configuration
+│   ├── constants/        # App configuration
+│   ├── utils/            # Utility functions
+│   └── assets/           # Images, fonts, etc.
+├── __tests__/            # Test files
+├── App.tsx               # Root component
+├── package.json
+└── tsconfig.json
+```
+
+## Testing
+
+### Run all tests:
+
+```bash
+npm test
+```
+
+### Run tests in watch mode:
+
+```bash
+npm run test:watch
+```
+
+### Run tests with coverage:
+
+```bash
+npm run test:coverage
+```
+
+### Test Structure:
+
+- `__tests__/screens/` - Screen component tests
+- `__tests__/components/` - Component tests
+- `__tests__/integration/` - Integration tests
+- `__tests__/api/` - API client tests
+
+## Development Workflow
+
+### 1. Start Backend
+
+```bash
+cd ../backend-api
+npm run dev
+```
+
+### 2. Start Mobile App
+
+```bash
+npm start
+```
+
+### 3. Test on Device
+
+- Install Expo Go app on your phone
+- Scan QR code from terminal
+- Or use emulator: `npm run android` / `npm run ios`
+
+### 4. Development Cycle
+
+- Make changes to source files
+- App will hot-reload automatically
+- Check console for errors
+- Test on device/emulator
 
 ## Building for Production
 
-### Expo Build
+### Android APK:
 
-To build the application using Expo's build service:
+```bash
+expo build:android
+```
 
-1. Configure your app in `app.json`
-2. Run the build command:
-   ```
-   expo build:ios     # for iOS
-   expo build:android # for Android
-   ```
+### iOS IPA:
 
-### EAS Build
+```bash
+expo build:ios
+```
 
-For Expo Application Services build:
+### Using EAS Build (Recommended):
 
-1. Configure your build in `eas.json`
-2. Run the EAS build command:
-   ```
-   eas build --platform ios     # for iOS
-   eas build --platform android # for Android
-   ```
+```bash
+npm install -g eas-cli
+eas build --platform android
+eas build --platform ios
+```
+
+## Common Issues & Solutions
+
+### Issue: "Network request failed"
+
+**Solution:** Ensure backend is running and accessible. Check IP address in config.
+
+### Issue: "Unable to resolve module"
+
+**Solution:** Clear cache and reinstall:
+
+```bash
+rm -rf node_modules
+npm install
+expo start -c
+```
+
+### Issue: "Metro bundler fails to start"
+
+**Solution:** Kill any processes on port 8081:
+
+```bash
+# macOS/Linux
+lsof -ti:8081 | xargs kill -9
+
+# Windows
+netstat -ano | findstr :8081
+taskkill /PID <PID> /F
+```
+
+### Issue: Cannot connect to backend from device
+
+**Solution:**
+
+1. Ensure device and computer are on same network
+2. Use computer's IP address (not localhost)
+3. Check firewall settings
+4. Verify backend is accessible: `curl http://<YOUR_IP>:3010/api/committee/candidates`
+
+## Key Screens
+
+### Login Screen (`src/screens/Login`)
+
+- Electoral ID and password authentication
+- Link to registration
+- Error handling and validation
+
+### Registration Screen (`src/screens/Registration`)
+
+- New voter registration
+- Form validation
+- State selection
+- Password strength requirements
+
+### Groups Screen (`src/screens/Groups`)
+
+- Main voting interface
+- Candidate selection
+- Vote submission with confirmation
+- Blockchain transaction handling
+
+### Candidates Screen (`src/screens/Candidates`)
+
+- Browse all candidates
+- View candidate details
+- Live election projections
+
+### Two-Factor Authentication (`src/screens/TwoFactor`)
+
+- OTP verification
+- QR code scanning
+- Email-based 2FA
+
+## API Integration
+
+The app integrates with these backend endpoints:
+
+- `POST /api/committee/auth-mobile` - Login
+- `POST /api/committee/register-voter` - Registration
+- `GET /api/committee/candidates` - Get candidates
+- `GET /api/committee/announcement` - Get election details
+- `GET /api/committee/refresh-token` - Refresh JWT
+- `POST /api/committee/verify-otp` - 2FA verification
+- `POST /blockchain/make-transaction` - Submit vote
+
+## Security Considerations
+
+- JWT tokens stored in Expo SecureStore
+- Passwords never stored locally
+- HTTPS recommended for production
+- Token refresh mechanism
+- Session timeout handling
+
+## Contributing
+
+1. Create feature branch: `git checkout -b feature/my-feature`
+2. Make changes and test thoroughly
+3. Run tests: `npm test`
+4. Commit: `git commit -m "Add my feature"`
+5. Push: `git push origin feature/my-feature`
+6. Create Pull Request
+
+## License
+
+MIT License - see LICENSE file for details
