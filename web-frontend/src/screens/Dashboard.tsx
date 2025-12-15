@@ -58,9 +58,7 @@ function Dashboard() {
       acronym: "",
       party: "",
       status: "",
-      toast: function (...params: any[]): void {
-        throw new Error("Function not implemented.");
-      },
+      toast: () => {},
     },
   });
 

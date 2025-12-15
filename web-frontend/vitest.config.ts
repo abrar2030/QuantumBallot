@@ -8,10 +8,17 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
-    setupFiles: ["./src/tests/setup-enhanced.ts"],
+    setupFiles: ["__tests__/setup.ts"],
     coverage: {
       reporter: ["text", "json", "html"],
-      exclude: ["node_modules/", "src/tests/setup-enhanced.ts"],
+      exclude: [
+        "node_modules/",
+        "__tests__/setup.ts",
+        "**/*.test.{ts,tsx}",
+        "**/*.spec.{ts,tsx}",
+        "**/dist/**",
+        "**/build/**",
+      ],
     },
     include: ["**/*.{test,spec}.{js,jsx,ts,tsx}"],
     // Optimize for memory usage
@@ -29,7 +36,7 @@ export default defineConfig({
     // Timeout settings
     testTimeout: 10000,
     hookTimeout: 10000,
-    // Disable watch mode
+    // Disable watch mode by default
     watch: false,
   },
   resolve: {
