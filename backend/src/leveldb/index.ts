@@ -1,11 +1,24 @@
 import { Block, Candidate, Voter } from "../blockchain/data_types";
 import { Citizen, User } from "../committee/data_types";
+import * as path from "path";
+import * as fs from "fs";
 
-const NODE_ADDRESS = process.argv[2];
+const NODE_ADDRESS = process.argv[2] || "3000";
 const getBlockAddress = (str) => str + NODE_ADDRESS;
 
 const { Level } = require("level");
-const db = new Level(getBlockAddress("././db/db"), { valueEncoding: "json" });
+
+// Determine database path from environment or use default
+const DB_PATH = process.env.DB_PATH || "./data/QuantumBallot_db";
+const dbPath = getBlockAddress(DB_PATH);
+
+// Ensure database directory exists
+const dbDir = path.dirname(dbPath);
+if (!fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, { recursive: true });
+}
+
+const db = new Level(dbPath, { valueEncoding: "json" });
 
 const BLOCK = getBlockAddress("block");
 const CHAIN = getBlockAddress("chain");
@@ -42,6 +55,46 @@ const votercitizenrelationdb = db.sublevel(VOTER_CITIZEN_RELATION, {
 /*
   INFO ABOUT THE API: https://github.com/Level/level?tab=readme-ov-file
 */
+
+/**
+ * Initialize and connect to the LevelDB database
+ * @returns Promise that resolves when database is ready
+ */
+export async function connectToDB(): Promise<void> {
+  try {
+    // Open the database if not already open
+    await db.open();
+    console.log(`LevelDB connected successfully at: ${dbPath}`);
+  } catch (error) {
+    if (error.code === "LEVEL_DATABASE_NOT_OPEN") {
+      // Database is already open, which is fine
+      console.log(`LevelDB already open at: ${dbPath}`);
+    } else {
+      console.error("Failed to connect to LevelDB:", error);
+      throw error;
+    }
+  }
+}
+
+/**
+ * Close the database connection
+ */
+export async function closeDB(): Promise<void> {
+  try {
+    await db.close();
+    console.log("LevelDB connection closed");
+  } catch (error) {
+    console.error("Error closing LevelDB:", error);
+    throw error;
+  }
+}
+
+/**
+ * Get database instance for external use
+ */
+export function getDB() {
+  return db;
+}
 
 export async function writeTransaction(key, value) {
   await transactiondb.put(key, value);
@@ -171,8 +224,16 @@ export async function readBlock(key) {
 }
 
 export async function readChain() {
-  const value = await chaindb.get(CHAIN);
-  return value;
+  try {
+    const value = await chaindb.get(CHAIN);
+    return value;
+  } catch (error) {
+    // Return empty array if chain doesn't exist yet
+    if (error.code === "LEVEL_NOT_FOUND") {
+      return [];
+    }
+    throw error;
+  }
 }
 
 export async function readVoterCitizenRelation(key) {
@@ -185,13 +246,27 @@ export async function clearVoterCitizenRelation() {
 }
 
 export async function readAnnouncement() {
-  const value = await announcementdb.get(ANNOUNCEMENT);
-  return value;
+  try {
+    const value = await announcementdb.get(ANNOUNCEMENT);
+    return value;
+  } catch (error) {
+    if (error.code === "LEVEL_NOT_FOUND") {
+      return null;
+    }
+    throw error;
+  }
 }
 
 export async function readResults() {
-  const value = await resultsdb.get(RESULTS);
-  return value;
+  try {
+    const value = await resultsdb.get(RESULTS);
+    return value;
+  } catch (error) {
+    if (error.code === "LEVEL_NOT_FOUND") {
+      return null;
+    }
+    throw error;
+  }
 }
 
 export async function readTransactions() {

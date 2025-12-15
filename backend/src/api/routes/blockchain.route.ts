@@ -17,7 +17,7 @@ const verifyJWTWeb = require("../../middleware/verifyJWTWeb");
 
 // Error response helper function
 const errorResponse = (res, status, message, details = null) => {
-  const response = {
+  const response: any = {
     success: false,
     message,
     timestamp: new Date().toISOString(),

@@ -1,58 +1,131 @@
-# Comprehensive Test Suite for QuantumBallot Backend
+# QuantumBallot Backend
 
-## Overview
+This is the backend for the QuantumBallot voting system.
 
-This test suite provides comprehensive testing for the QuantumBallot backend, covering all core modules, API routes, and security flows. The tests are designed to validate functionality, ensure data integrity, and catch potential issues before they reach production.
+## Quick Start
 
-## Test Coverage
+### Prerequisites
 
-### Core Modules
+- Node.js v16+ and npm v7+
+- No external database required (uses embedded LevelDB)
 
-- **Crypto Module**: Encryption/decryption, key generation, identifier creation
-- **Blockchain Module**: Block creation, transaction processing, chain validation
-- **Committee Module**: User management, authentication, voter registration
-- **API Routes**: Blockchain and committee endpoints
-- **Middleware**: JWT verification, credentials validation
-
-### Test Types
-
-- **Unit Tests**: Testing individual functions and components
-- **Integration Tests**: Testing interactions between modules
-- **API Tests**: Testing HTTP endpoints and responses
-- **Security Tests**: Testing authentication and data protection
-
-## Running the Tests
+### Installation & Startup
 
 ```bash
-# Install dependencies
+# 1. Install dependencies
 npm install
 
-# Run all tests
-npm test
+# 2. Configure environment (copy and edit)
+cp .env.example .env
 
-# Run tests with coverage report
-npm run test:coverage
+# 3. Build TypeScript
+npm run build
 
-# Run tests in watch mode during development
-npm run test:watch
+# 4. Start the server
+npm start
 ```
 
-## Test Structure
+The server will start on `http://localhost:3000` (configurable via PORT in .env)
 
-- `tests/crypto.test.js`: Tests for cryptographic operations
-- `tests/blockchain.test.js`: Tests for blockchain functionality
-- `tests/committee.test.js`: Tests for committee management
-- `tests/api.test.js`: Tests for API routes
-- `tests/middleware.test.js`: Tests for middleware components
-- `tests/mocks/`: Mock implementations for testing
+### Development Mode (with auto-reload)
 
-## Implementation Notes
+```bash
+npm run dev
+```
 
-The test suite uses Jest as the testing framework and includes mocks for external dependencies to ensure tests are isolated and repeatable. The tests are designed to be comprehensive, covering both positive and negative scenarios, edge cases, and security-sensitive operations.
+## Verification
 
-## Future Improvements
+Test that everything works:
 
-- Add more edge case testing for blockchain operations
-- Implement performance testing for high-load scenarios
-- Add end-to-end tests for complete user flows
-- Implement continuous integration to run tests automatically
+```bash
+# Health check
+curl http://localhost:3000/health
+
+# Main API
+curl http://localhost:3000/
+
+# Blockchain API
+curl http://localhost:3000/api/blockchain/
+
+# Committee API
+curl http://localhost:3000/api/committee/candidates
+```
+
+All endpoints should return proper JSON responses.
+
+## Environment Configuration
+
+Required environment variables (see `.env.example` for full details):
+
+- `PORT` - Server port (default: 3000)
+- `NODE_ENV` - Environment (development/production)
+- `JWT_SECRET` - JWT signing secret
+- `ACCESS_TOKEN_SECRET` - Access token secret
+- `DB_PATH` - LevelDB database path
+- `SECRET_KEY_IDENTIFIER` - 64-char hex encryption key
+- `SECRET_IV_IDENTIFIER` - 32-char hex IV
+- `SECRET_KEY_VOTES` - 64-char hex encryption key
+- `SECRET_IV_VOTES` - 32-char hex IV
+- Email settings (MAILER\_\*)
+
+**Generate encryption keys:**
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+## Available Scripts
+
+- `npm run build` - Compile TypeScript to JavaScript
+- `npm start` - Start production server
+- `npm run dev` - Start development server with auto-reload
+- `npm test` - Run test suite
+- `npm run test:coverage` - Run tests with coverage report
+
+## API Endpoints
+
+### Core Endpoints
+
+- `GET /` - API status and version
+- `GET /health` - Health check
+
+### Blockchain API (`/api/blockchain`)
+
+- `GET /` - Get full blockchain state
+- `GET /chain` - Get blockchain
+- `GET /blocks` - Get all blocks
+- `GET /block-detail/:id` - Get specific block
+- `GET /transactions` - Get all transactions
+- `GET /pending-transactions` - Get pending transactions
+- `POST /transaction` - Submit new transaction
+- `POST /transaction/broadcast` - Broadcast transaction
+- `GET /mine` - Mine new block
+- `GET /voters` - Get voters list
+- `GET /candidates` - Get candidates list
+- `GET /deploy-voters` - Deploy generated voters
+- `GET /deploy-candidates` - Deploy candidates
+- `GET /get-results` - Get election results
+- `GET /get-results-computed` - Get computed results
+
+### Committee API (`/api/committee`)
+
+- `GET /registers` - Get citizen registers
+- `GET /candidates` - Get candidates
+- `POST /add-candidate` - Add new candidate
+- `POST /add-user` - Add committee user
+- `GET /generate-identifiers` - Generate voter identifiers
+
+## Architecture
+
+- **Runtime**: Node.js with Express.js
+- **Language**: TypeScript (compiled to JavaScript)
+- **Database**: LevelDB (embedded key-value store)
+- **Blockchain**: Custom implementation with smart contracts
+- **Encryption**: AES-256-CBC for vote and identifier encryption
+- **Authentication**: JWT-based
+
+## Testing
+
+Full startup log available in `STARTUP_LOG.txt`
+
+All endpoints have been smoke tested and are operational.

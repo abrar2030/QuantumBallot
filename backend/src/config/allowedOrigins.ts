@@ -1,4 +1,4 @@
-const allowedOrigins = [
+const allowedOrigins: string[] = [
   "http://localhost:3007",
   "http://localhost:3010",
   "http://127.0.0.1:5500",
@@ -12,4 +12,4 @@ const allowedOrigins = [
   "http://localhost:3006",
 ];
 
-module.exports = allowedOrigins;
+export = allowedOrigins;
