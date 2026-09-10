@@ -62,7 +62,6 @@ describe("BlockChain", () => {
 
 describe("Network", () => {
   test("Generates different node addresses", () => {
-    // BUG FIX: .substr() is deprecated — replaced with .substring()
     const ids = [1, 2].map(() =>
       randomUUID().split("-").join("").substring(0, 4),
     );
