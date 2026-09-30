@@ -312,7 +312,7 @@ module.exports = (
     }),
   );
 
-  // Receives replicated transactions from peers — does NOT re-broadcast (prevents loops)
+  // Receives replicated transactions from peers - does NOT re-broadcast (prevents loops)
   router.post(
     "/transaction/broadcast",
     asyncHandler(async (req: Request, res: Response) => {

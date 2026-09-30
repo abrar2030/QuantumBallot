@@ -274,4 +274,4 @@ def send_notification(message, secret_arn):
 
     except Exception as e:
         logger.error(f"Error sending notification: {str(e)}")
-        # Do not re-raise — notification failures must not abort rotation
+        # Do not re-raise - notification failures must not abort rotation

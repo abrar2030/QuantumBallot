@@ -845,11 +845,11 @@ class SecurityTestSuite:
         print(f"Warnings: {total_warnings}")
 
         if total_failed > 0:
-            print(f"\n❌ Security tests FAILED — {total_failed} critical issues found")
+            print(f"\n❌ Security tests FAILED - {total_failed} critical issues found")
             sys.exit(1)
         elif total_warnings > 0:
             print(
-                f"\n⚠️  Security tests PASSED with warnings — {total_warnings} items to review"
+                f"\n⚠️  Security tests PASSED with warnings - {total_warnings} items to review"
             )
         else:
             print("\n✅ All security tests PASSED")

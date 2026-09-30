@@ -99,7 +99,7 @@ const ElectionResults = () => {
           <CardHeader className="pb-2">
             <CardDescription>Total Votes Cast</CardDescription>
             <CardTitle className="text-3xl text-gray-700">
-              {isLoading ? "—" : totalVotes.toLocaleString()}
+              {isLoading ? "-" : totalVotes.toLocaleString()}
             </CardTitle>
           </CardHeader>
         </Card>
@@ -107,7 +107,7 @@ const ElectionResults = () => {
           <CardHeader className="pb-2">
             <CardDescription>Candidates</CardDescription>
             <CardTitle className="text-3xl text-gray-700">
-              {isLoading ? "—" : results.length}
+              {isLoading ? "-" : results.length}
             </CardTitle>
           </CardHeader>
         </Card>
@@ -116,10 +116,10 @@ const ElectionResults = () => {
             <CardDescription>Current Leader</CardDescription>
             <CardTitle className="text-lg text-red-700 truncate">
               {isLoading
-                ? "—"
+                ? "-"
                 : winner
                   ? `${winner.candidate} (${winner.percentage}%)`
-                  : "—"}
+                  : "-"}
             </CardTitle>
           </CardHeader>
         </Card>

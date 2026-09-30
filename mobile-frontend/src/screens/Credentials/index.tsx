@@ -26,7 +26,7 @@ export function Credentials({ navigation }: any) {
     if (permission.granted) {
       navigation.navigate("CameraQR", { secret });
     } else {
-      // Permission denied — navigate anyway so user sees the camera screen with its own message
+      // Permission denied - navigate anyway so user sees the camera screen with its own message
       navigation.navigate("CameraQR", { secret });
     }
   };

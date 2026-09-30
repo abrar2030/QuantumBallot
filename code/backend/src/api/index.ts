@@ -10,7 +10,7 @@ module.exports = (
   blockchain: BlockChain,
   allNodes: string[] | (() => string[]),
 ) => {
-  // Router created fresh per call — prevents route double-registration if
+  // Router created fresh per call - prevents route double-registration if
   // this module is required more than once (e.g. main server + P2P node)
   const router = express.Router();
   router.use(express.json());

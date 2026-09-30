@@ -19,7 +19,7 @@ export const columns: ColumnDef<Transaction>[] = [
           {hash.substring(0, 16)}…
         </span>
       ) : (
-        <span className="text-gray-300">—</span>
+        <span className="text-gray-300">-</span>
       );
     },
   },
@@ -33,7 +33,7 @@ export const columns: ColumnDef<Transaction>[] = [
           {id.substring(0, 9)}
         </span>
       ) : (
-        <span className="text-gray-300">—</span>
+        <span className="text-gray-300">-</span>
       );
     },
   },
@@ -48,7 +48,7 @@ export const columns: ColumnDef<Transaction>[] = [
           {display.substring(0, 9)}
         </span>
       ) : (
-        <span className="text-gray-300">—</span>
+        <span className="text-gray-300">-</span>
       );
     },
   },
@@ -58,7 +58,7 @@ export const columns: ColumnDef<Transaction>[] = [
     cell: ({ row }) => {
       const raw: string = row.getValue("voteTime") ?? "";
       const ts = parseInt(raw, 10);
-      if (isNaN(ts) || ts <= 0) return <span className="text-gray-300">—</span>;
+      if (isNaN(ts) || ts <= 0) return <span className="text-gray-300">-</span>;
       return (
         <span className="text-xs text-gray-600">
           {new Date(ts).toLocaleString()}

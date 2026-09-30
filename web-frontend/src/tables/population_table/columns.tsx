@@ -67,7 +67,7 @@ export const columns: ColumnDef<Citizen>[] = [
         <span
           className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium capitalize ${colors[status] ?? "bg-gray-100 text-gray-500"}`}
         >
-          {status || "—"}
+          {status || "-"}
         </span>
       );
     },
@@ -86,7 +86,7 @@ export const columns: ColumnDef<Citizen>[] = [
         <span
           className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium capitalize ${colors[v] ?? "bg-gray-100 text-gray-500"}`}
         >
-          {v || "—"}
+          {v || "-"}
         </span>
       );
     },

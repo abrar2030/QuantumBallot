@@ -50,7 +50,7 @@ export function CandidateDetails({ navigation, route }: any) {
 
         <View style={styles.infoRow}>
           <Text style={styles.infoLabel}>Party</Text>
-          <Text style={styles.infoValue}>{party ?? "—"}</Text>
+          <Text style={styles.infoValue}>{party ?? "-"}</Text>
         </View>
         {acronym ? (
           <View style={styles.infoRow}>

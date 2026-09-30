@@ -65,9 +65,9 @@ function BlockchainDetails() {
   }, [blockHash, refetch]);
 
   const getDate = (str: string | undefined) => {
-    if (!str) return "—";
+    if (!str) return "-";
     const x: number = parseInt(str, 10);
-    if (isNaN(x)) return "—";
+    if (isNaN(x)) return "-";
     return new Date(x).toUTCString();
   };
 
@@ -180,14 +180,14 @@ function BlockchainDetails() {
                       <span className="font-inria-sans text-sm text-gray-400">
                         Version:
                       </span>
-                      <span>{blockHeader?.version ?? "—"}</span>
+                      <span>{blockHeader?.version ?? "-"}</span>
                     </div>
                     <div className={itemStyle}>
                       <span className="font-inria-sans text-sm text-gray-400">
                         Hash Block:
                       </span>
                       <div className="flex flex-row justify-center gap-2">
-                        <span>{blockHeader?.blockHash ?? "—"}</span>
+                        <span>{blockHeader?.blockHash ?? "-"}</span>
                         {blockHeader?.blockHash && (
                           <BlockCopyButton
                             event="copy_chunk_code"
@@ -202,14 +202,14 @@ function BlockchainDetails() {
                       <span className="font-inria-sans text-sm text-gray-400">
                         Previous BlockHash:
                       </span>
-                      <span>{blockHeader?.previousBlockHash ?? "—"}</span>
+                      <span>{blockHeader?.previousBlockHash ?? "-"}</span>
                     </div>
                     <div className={itemStyle}>
                       <span className="font-inria-sans text-sm text-gray-400">
                         Merkle Root:
                       </span>
                       <div className="flex flex-row justify-center gap-2">
-                        <span>{blockHeader?.merkleRoot ?? "—"}</span>
+                        <span>{blockHeader?.merkleRoot ?? "-"}</span>
                         {blockHeader?.merkleRoot && (
                           <BlockCopyButton
                             event="copy_chunk_code"
@@ -230,33 +230,33 @@ function BlockchainDetails() {
                       <span className="font-inria-sans text-sm text-gray-400">
                         Difficulty Target:
                       </span>
-                      <span>{blockHeader?.difficultyTarget ?? "—"}</span>
+                      <span>{blockHeader?.difficultyTarget ?? "-"}</span>
                     </div>
                     <div className={itemStyle}>
                       <span className="font-inria-sans text-sm text-gray-400">
                         Nonce:
                       </span>
-                      <span>{blockHeader?.nonce ?? "—"}</span>
+                      <span>{blockHeader?.nonce ?? "-"}</span>
                     </div>
                     <div className={itemStyle}>
                       <span className="font-inria-sans text-sm text-gray-400">
                         Block Index:
                       </span>
-                      <span>{blockIndex ?? "—"}</span>
+                      <span>{blockIndex ?? "-"}</span>
                     </div>
                     <div className={itemStyle}>
                       <span className="font-inria-sans text-sm text-gray-400">
                         Block Size:
                       </span>
                       <span>
-                        {blockSize != null ? `${blockSize} bytes` : "—"}
+                        {blockSize != null ? `${blockSize} bytes` : "-"}
                       </span>
                     </div>
                     <div className={itemStyle}>
                       <span className="font-inria-sans text-sm text-gray-400">
                         Transaction Counter:
                       </span>
-                      <span>{transactionCounter ?? "—"}</span>
+                      <span>{transactionCounter ?? "-"}</span>
                     </div>
                   </div>
                 </div>

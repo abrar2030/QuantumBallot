@@ -34,7 +34,7 @@ export const columns: ColumnDef<Voter>[] = [
     header: "Electoral ID",
     cell: ({ row }) => (
       <span className="font-mono text-xs text-gray-500">
-        {row.original.electoralId ?? "—"}
+        {row.original.electoralId ?? "-"}
       </span>
     ),
   },
@@ -43,7 +43,7 @@ export const columns: ColumnDef<Voter>[] = [
     header: "Choice Code",
     cell: ({ row }) => (
       <span className="text-sm text-gray-600">
-        {row.original.choiceCode || "—"}
+        {row.original.choiceCode || "-"}
       </span>
     ),
   },

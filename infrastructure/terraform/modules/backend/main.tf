@@ -15,7 +15,7 @@ resource "aws_ecs_cluster" "backend_cluster" {
   }
 }
 
-# ALB security group — accepts HTTP/HTTPS from the internet
+# ALB security group - accepts HTTP/HTTPS from the internet
 resource "aws_security_group" "alb_sg" {
   name        = "${var.environment_name}-alb-sg"
   description = "Allow HTTP/HTTPS inbound to ALB"
@@ -49,7 +49,7 @@ resource "aws_security_group" "alb_sg" {
   }
 }
 
-# Backend service security group — only accepts traffic from the ALB
+# Backend service security group - only accepts traffic from the ALB
 resource "aws_security_group" "backend_sg" {
   name        = "${var.environment_name}-backend-sg"
   description = "Allow traffic to backend service from ALB only"
@@ -255,7 +255,7 @@ resource "aws_lb_target_group" "backend_tg" {
   }
 }
 
-# HTTP listener — redirects all traffic to HTTPS
+# HTTP listener - redirects all traffic to HTTPS
 resource "aws_lb_listener" "backend_http_listener" {
   load_balancer_arn = aws_lb.backend_alb.arn
   port              = 80
@@ -272,7 +272,7 @@ resource "aws_lb_listener" "backend_http_listener" {
   }
 }
 
-# HTTPS listener — forwards to the backend target group
+# HTTPS listener - forwards to the backend target group
 resource "aws_lb_listener" "backend_https_listener" {
   load_balancer_arn = aws_lb.backend_alb.arn
   port              = 443

@@ -35,7 +35,7 @@ generate_secret "${SCRIPT_DIR}/secrets/jwt_secret.txt" 64
 
 if [ ! -f "${SCRIPT_DIR}/.env" ]; then
   cp "${SCRIPT_DIR}/.env.example" "${SCRIPT_DIR}/.env"
-  echo "==> Created .env from .env.example — review and update before use."
+  echo "==> Created .env from .env.example - review and update before use."
 fi
 
 echo ""

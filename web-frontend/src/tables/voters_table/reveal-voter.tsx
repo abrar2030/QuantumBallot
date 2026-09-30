@@ -45,7 +45,7 @@ export default function RevealVoter({
                   Electoral ID
                 </span>
                 <span className="font-mono text-sm text-gray-800">
-                  {voter.electoralId ?? "—"}
+                  {voter.electoralId ?? "-"}
                 </span>
               </div>
               <div className="flex flex-col gap-1">
@@ -53,7 +53,7 @@ export default function RevealVoter({
                   Choice Code
                 </span>
                 <span className="text-sm text-gray-800">
-                  {voter.choiceCode || "—"}
+                  {voter.choiceCode || "-"}
                 </span>
               </div>
               <div className="flex flex-col gap-1">

@@ -146,17 +146,17 @@ export function LiveProjection() {
           />
 
           <View style={styles.candidateLeftText}>
-            <Text style={styles.textName}>{hasData ? data[0].name : "—"}</Text>
+            <Text style={styles.textName}>{hasData ? data[0].name : "-"}</Text>
             <Text style={styles.textParty}>
-              {hasData ? data[0].acronym : "—"}
+              {hasData ? data[0].acronym : "-"}
             </Text>
           </View>
         </View>
         <View style={styles.candidateRight}>
           <View style={styles.candidateRightText}>
-            <Text style={styles.textName}>{hasData ? data[1].name : "—"}</Text>
+            <Text style={styles.textName}>{hasData ? data[1].name : "-"}</Text>
             <Text style={styles.textParty}>
-              {hasData ? data[1].acronym : "—"}
+              {hasData ? data[1].acronym : "-"}
             </Text>
           </View>
 

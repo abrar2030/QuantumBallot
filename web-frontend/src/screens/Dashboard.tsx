@@ -195,7 +195,7 @@ function Dashboard() {
               <span className="text-2xl font-bold text-gray-700">
                 {dataResults?.expectedTotalVotes > 0
                   ? `${dataResults.expectedTotalVotes}M`
-                  : "—"}
+                  : "-"}
               </span>
             </div>
             <div className="w-px bg-gray-100" />
@@ -283,7 +283,7 @@ function Dashboard() {
                 <span className="text-sm font-bold text-gray-700">
                   {dataResults.averageTimePerVote
                     ? `${Number(dataResults.averageTimePerVote.toFixed(2))} min/vote`
-                    : "—"}
+                    : "-"}
                 </span>
               </div>
               <div className="flex flex-col">
@@ -293,7 +293,7 @@ function Dashboard() {
                 <span className="text-sm font-bold text-gray-700">
                   {dataResults.averageVotePerProvince
                     ? `${Number(dataResults.averageVotePerProvince.toFixed(2))}/prov.`
-                    : "—"}
+                    : "-"}
                 </span>
               </div>
             </div>
