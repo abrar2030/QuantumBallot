@@ -13,11 +13,10 @@ from datetime import datetime
 from typing import Dict
 
 import boto3
+import docker
 import nmap
 import requests
 from botocore.exceptions import ClientError
-
-import docker
 from kubernetes import client, config
 
 
