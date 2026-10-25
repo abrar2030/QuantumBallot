@@ -39,17 +39,21 @@ jobs:
       - name: Finalize Check
         run: echo "All formatting checks completed successfully."
 
-  # ============================================================
-  # Job 2 -- Backend Tests
-  # ============================================================
-  backend_tests:
-    name: Backend Tests
+  # ====================================================================================
+  # Job 2 -- Backend Test & Build (Tests + TypeScript + Docker image + smoke test)
+  # ====================================================================================
+  backend_test_build:
+    name: Backend Test & Build
     runs-on: ubuntu-latest
     needs: code_quality
 
     defaults:
       run:
         working-directory: code/backend
+
+    env:
+      IMAGE_NAME: quantumballot-backend
+      CONTAINER_NAME: quantumballot-backend-ci
 
     steps:
       - name: Checkout Repository
@@ -80,36 +84,7 @@ jobs:
           path: code/backend/coverage/
           if-no-files-found: ignore
 
-  # ============================================================
-  # Job 3 -- Backend Build (TypeScript + Docker image + container smoke test)
-  # ============================================================
-  backend_build:
-    name: Backend Build
-    runs-on: ubuntu-latest
-    needs: backend_tests
-
-    env:
-      IMAGE_NAME: quantumballot-backend
-      CONTAINER_NAME: quantumballot-backend-ci
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js 24
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-          cache: npm
-          cache-dependency-path: code/package-lock.json
-
-      - name: Install dependencies
-        working-directory: code
-        run: npm install
-
       - name: Build backend
-        # tsc compiles the backend together with the blockchain package
-        # (see code/backend/tsconfig.json), so this runs from the workspace root.
         working-directory: code
         run: npm run build
 
@@ -127,8 +102,6 @@ jobs:
       - name: Build backend image
         uses: docker/build-push-action@v6
         with:
-          # Context is the workspace root (code/): the backend compiles together
-          # with ../blockchain and the lockfile lives there.
           context: code
           file: code/backend/Dockerfile
           push: false
@@ -148,8 +121,6 @@ jobs:
           fi
 
       - name: Smoke test the built image
-        # Starts the production image. No secrets are passed, so the app falls back to
-        # its development defaults (it logs a warning) and uses a fresh LevelDB volume.
         run: |
           set -euo pipefail
 
@@ -192,7 +163,7 @@ jobs:
         run: docker rm -f "${CONTAINER_NAME}" || true
 
   # ============================================================
-  # Job 4 -- Smart Contract Tests (Rust)
+  # Job 3 -- Smart Contract Tests (Rust)
   # ============================================================
   smart_contract_tests:
     name: Smart Contract Tests (Rust)
@@ -227,7 +198,7 @@ jobs:
         run: cargo test --verbose
 
   # ============================================================
-  # Job 5 -- Web Frontend Test & Build
+  # Job 4 -- Web Frontend Test & Build
   # ============================================================
   web-frontend_test_and_build:
     name: Web-Frontend Test & Build
@@ -267,7 +238,7 @@ jobs:
           retention-days: 7
 
   # ============================================================
-  # Job 6 -- Mobile Frontend (Expo) Test & Build
+  # Job 5 -- Mobile Frontend (Expo) Test & Build
   # ============================================================
   mobile_frontend:
     name: Mobile-Frontend Test & Build
