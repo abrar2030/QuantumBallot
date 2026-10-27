@@ -2,7 +2,7 @@
  * Tests for ThankVote screen
  */
 
-import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
 import React from "react";
 import ThankVote from "src/screens/ThankVote";
 
@@ -59,21 +59,25 @@ describe("ThankVote Screen", () => {
     expect(getByTestId("confetti-animation")).toBeTruthy();
   });
 
-  test("handles automatic navigation after timeout", async () => {
-    jest.useFakeTimers();
+  test("handles automatic navigation after timeout", () => {
+    const timeoutSpy = jest.spyOn(global, "setTimeout");
 
-    render(<ThankVote />);
+    const { unmount } = render(<ThankVote />);
 
-    jest.advanceTimersByTime(10001);
+    const autoNav = timeoutSpy.mock.calls.find(([, delay]) => delay >= 10000);
+    expect(autoNav).toBeDefined();
 
-    await waitFor(() => {
-      expect(mockReset).toHaveBeenCalledWith({
-        index: 0,
-        routes: [{ name: "Menu" }],
-      });
+    act(() => {
+      autoNav[0]();
     });
 
-    jest.useRealTimers();
+    expect(mockReset).toHaveBeenCalledWith({
+      index: 0,
+      routes: [{ name: "Menu" }],
+    });
+
+    unmount();
+    timeoutSpy.mockRestore();
   });
 
   test("copies transaction id to clipboard", async () => {

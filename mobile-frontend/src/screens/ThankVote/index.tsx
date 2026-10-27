@@ -23,11 +23,12 @@ export default function ThankVote() {
     route.params?.data || route.params?.transactionHash || "tx_unavailable";
 
   useEffect(() => {
-    Animated.timing(progress, {
+    const animation = Animated.timing(progress, {
       toValue: 1,
       duration: AUTO_NAV_DELAY,
       useNativeDriver: false,
-    }).start();
+    });
+    animation.start();
 
     const timer = setTimeout(() => {
       navigation.reset({
@@ -36,7 +37,10 @@ export default function ThankVote() {
       });
     }, AUTO_NAV_DELAY);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      animation.stop();
+    };
   }, [navigation, progress]);
 
   const copyToClipboard = async () => {

@@ -20,7 +20,9 @@ describe("votingService", () => {
     it("returns hasVoted: true when API says so", async () => {
       mockAxios.get.mockResolvedValueOnce({
         status: 200,
-        data: { hasVoted: true, voteTimestamp: "2025-01-01T00:00:00Z" },
+        data: {
+          data: { hasVoted: true, voteTimestamp: "2025-01-01T00:00:00Z" },
+        },
       });
 
       const result = await checkHasVoted("TEST123", "3010");
@@ -30,7 +32,7 @@ describe("votingService", () => {
     it("returns hasVoted: false when API says so", async () => {
       mockAxios.get.mockResolvedValueOnce({
         status: 200,
-        data: { hasVoted: false },
+        data: { data: { hasVoted: false } },
       });
 
       const result = await checkHasVoted("TEST123", "3010");
@@ -59,7 +61,10 @@ describe("votingService", () => {
     it("returns success with transactionHash on 200", async () => {
       mockAxios.post.mockResolvedValueOnce({
         status: 200,
-        data: { transactionHash: "0xabc123", message: "Vote recorded" },
+        data: {
+          data: { transactionHash: "0xabc123" },
+          message: "Vote recorded",
+        },
       });
 
       const result = await submitVote(
@@ -73,6 +78,7 @@ describe("votingService", () => {
 
       expect(result.success).toBe(true);
       expect(result.transactionHash).toBe("0xabc123");
+      expect(result.message).toBe("Vote recorded");
     });
 
     it("returns success: false on API error", async () => {

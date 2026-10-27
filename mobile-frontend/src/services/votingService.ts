@@ -42,7 +42,7 @@ export async function checkHasVoted(
     const response = await axios.get(votingStatusUrl, {
       params: { electoralId },
     });
-    const body = response.data.data;
+    const body = response.data?.data ?? {};
 
     return {
       hasVoted: body.hasVoted || false,
@@ -86,12 +86,12 @@ export async function submitVote(
       identifier: voteData.electoralId,
       choiceCode: voteData.candidateCode,
     });
-    const body = response.data.data;
+    const body = response.data?.data;
 
     return {
       success: true,
       transactionHash: body?.transactionHash,
-      message: response.data.message || "Vote recorded successfully",
+      message: response.data?.message || "Vote recorded successfully",
     };
   } catch (error: any) {
     if (Config.APP.SHOW_LOGS) {
