@@ -19,6 +19,7 @@
   "dependencies": {
     "@expo-google-fonts/roboto": "^0.2.3",
     "@expo-google-fonts/space-mono": "^0.2.3",
+    "@expo/metro-runtime": "~3.2.3",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-picker/picker": "2.7.5",
     "@react-navigation/material-bottom-tabs": "^6.2.19",
@@ -39,6 +40,7 @@
     "expo-status-bar": "~1.12.1",
     "phosphor-react-native": "^3.0.2",
     "react": "18.2.0",
+    "react-dom": "18.2.0",
     "react-native": "0.74.5",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-paper": "^5.12.3",
@@ -48,6 +50,7 @@
     "react-native-screens": "3.31.1",
     "react-native-svg": "15.2.0",
     "react-native-vector-icons": "^10.0.3",
+    "react-native-web": "~0.19.10",
     "styled-components": "^6.1.11"
   },
   "devDependencies": {
